@@ -1,18 +1,15 @@
-#BEViS
-
-Это  Full-Stack Javascript фреймворк для создания веб-сайтов.
-
 ## Быстрый старт
 ```
 git clone git@github.com:bevis-ui/bevis-stub.git your-project
 cd your-project
 make
 ```
-Открыть в браузере localhost:8000
+Откройте в браузере ```localhost:8000```
 
-## Что дальше?
+`BEViS` - это  Full-Stack Javascript фреймворк для создания веб-сайтов.
 
-Читайте нашу документацию. Мы подготовили для вас [весёлые учебники](https://github.yandex-team.ru/makishvili/docs/blob/master/README.md#%D0%92%D0%B5%D1%81%D1%91%D0%BB%D1%8B%D0%B9-%D1%83%D1%87%D0%B5%D0%B1%D0%BD%D0%B8%D0%BA),
+Мы подготовили для вас [весёлые учебники](https://github.yandex-team.ru/makishvili/docs/blob/master/README
+.md#%D0%92%D0%B5%D1%81%D1%91%D0%BB%D1%8B%D0%B9-%D1%83%D1%87%D0%B5%D0%B1%D0%BD%D0%B8%D0%BA),
 от которых вы не сможете оторваться, и серьёзные [справочные руководства](https://github.yandex-team.ru/makishvili/docs/blob/master/README.md#%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D1%8B%D0%B5-%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%B0),
 в которых нет даже намёка на шутливость.
 
