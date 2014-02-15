@@ -4,7 +4,7 @@ git clone git@github.com:bevis-ui/bevis-stub.git your-project
 cd your-project
 make
 ```
-Откройте в браузере ```localhost:8000``` и скажите: "Привет, Бивис!"
+Откройте в браузере ```localhost:8080``` и скажите: "Привет, Бивис!"
 
 ##  BEViS?
 Это `javascript` фреймворк для создания веб-сайтов. Не нужно знать ни одного серверного языка
