@@ -39,7 +39,7 @@ _Антон Павлович Чехов_
 ### О технологиях
 1. [bt]()
 2. [ENB]()
-3. [Модульная система](modules.md)
+3. [Модульная система](https://github.com/ymaps/modules/blob/master/what-is-this.md)
 4. [YBlock]()
 5. и т.д.
 
