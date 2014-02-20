@@ -71,7 +71,7 @@ _Так что, нет, `BEViS` - не методология._
 ```javascript
 module.exports = function (pages) {
 
-    pages.declare('index-page', function () {
+    pages.declare('index', function () {
         return {
             block: 'page',
             styles: 'index.css',
@@ -344,7 +344,7 @@ h1 {
 ```javascript
 module.exports = function (pages) {
 
-    pages.declare('index-page', function () {
+    pages.declare('index', function () {
         return {
             block: 'header'
         }
@@ -467,7 +467,7 @@ module.exports = function (pages) {
 
     var headerTitle = http.get(...); // получили данные из бекенда
 
-    pages.declare('index-page', function () {
+    pages.declare('index', function () {
         return {
             block: 'header'
             text: headerTitle // здесь подставили значение из базы
