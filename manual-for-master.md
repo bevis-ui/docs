@@ -71,7 +71,7 @@ _Так что, нет, `BEViS` - не методология._
 ```javascript
 module.exports = function (pages) {
 
-    pages.declare('index-page', function (params) {
+    pages.declare('index-page', function () {
         return {
             block: 'page',
             styles: 'index.css',
@@ -92,9 +92,9 @@ module.exports = function (pages) {
 };
 ```
 Если вы на Node.js не писали, не пугайтесь, не обращайте внимания на первую строку. Относитесь к ней, как обвязке, без которой нельзя.
-Всё интересное происходит внутри. А внутри обычный javascript. Видите вызов функции page.declare()?
+Всё интересное происходит внутри. А внутри обычный javascript. Видите вызов функции `pages.declare()`?
 
-В бивис-приложении есть модуль `page`, у которого есть метод `declare`. Выражаясь языком юристов, это "декларация о намерениях" :)
+В бивис-приложении есть объект `pages`, у которого есть метод `declare`. Выражаясь языком юристов, это "декларация о намерениях" :)
 Мы декларируем, что наша страница будет состоять из нескольких компонентов и перечисляем  эти компоненты в каком-то простом формате.
 
 Мы сказали, что страница состоит из блока `page`, в теле которого есть два других блока - `шапка` и `форма авторизации`.
@@ -344,7 +344,7 @@ h1 {
 ```javascript
 module.exports = function (pages) {
 
-    pages.declare('index-page', function (params) {
+    pages.declare('index-page', function () {
         return {
             block: 'header'
         }
@@ -465,9 +465,9 @@ var http = require('http'); // подключили Nodejs-модуль для h
 
 module.exports = function (pages) {
 
-    var headerTitle = http.get(...); // здесь сходили в базу и получили ответ
+    var headerTitle = http.get(...); // получили данные из бекенда
 
-    pages.declare('index-page', function (params) {
+    pages.declare('index-page', function () {
         return {
             block: 'header'
             text: headerTitle // здесь подставили значение из базы
