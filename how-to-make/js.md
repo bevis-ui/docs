@@ -1,8 +1,5 @@
 в разработке
 
-YBlock - это маленький классик.
-https://github.yandex-team.ru/pages/islets/islets/blocks/blocks.ru.html#y-block
-
 как от него отнаследоваться,
 как инициализировтаься,
 как порлучить доступ к блоку,

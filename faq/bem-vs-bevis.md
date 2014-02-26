@@ -455,11 +455,11 @@ Mix
 
 `theme_pseudo + shadow_yes`:
 
-![pseudo_shadow](http://img-fotki.yandex-team.ru/get/100/1120000000000693.0/0_3af_7299917_orig)
+![pseudo_shadow](pseudo_shadow.png)
 
 `theme_action + round_yes`:
 
-![active_round](http://img-fotki.yandex-team.ru/get/100/1120000000000693.0/0_3b0_a6f41932_S)
+![active_round](active_round.png)
 
 Общее количество возможных сочетаний модификаторов у кнопки: **144**. Неизвестно, сколько из этих сочетаний отображаются
 верно, сколько неверно и, что важнее, сколько перестанет верно отображаться в следующей версии `BEM`-библиотеки.

@@ -215,5 +215,5 @@ modules.define('input', ['inherit', 'y-block'], function (provide, inherit, YBlo
 
 Осталось убедиться, что все работает.
 
-* Подробнее о `YBlock`: https://github.yandex-team.ru/pages/islets/islets/blocks/blocks.ru.html#y-block
-* Подробнее об `inherit`: https://github.com/dfilatov/inherit
+* Подробнее о `YBlock`: [ссылка]()
+* Подробнее об `inherit`: [ссылка](https://github.com/dfilatov/inherit)
