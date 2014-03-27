@@ -439,7 +439,7 @@ bt.match('header__title', function (ctx) {
 
 [слайд](http://bevis-ui.github.io/bevis-and-bt-speech/?full#29)
 
-Поиграйтесь и понадлюдайте, как наличие того или иного параметра влияет на внешний вод блока.
+Поиграйтесь и понаблюдайте, как наличие того или иного параметра влияет на внешний вод блока.
 Это возможно благодаря простому вызову блока и декларативным шаблонам. Конечно, этого же можно добиться и с помощью императивных
 шаблонов. И тут возникает вопрос: "Императивные шаблоны Смарти и Джанго привычные, понятные, их понимают все.
 Почему мы не используем их?"
@@ -476,7 +476,7 @@ bt.match('header__title', function (ctx) {
 При такой простой декларации шапки, конечная `HTML`-верстка может какой угодно сложной.
 
 ```html
-<header class="y-header_islet-search _init _live-events" data-block="y-header" data-options="{&quot;mixins&quot;:[{&quot;name&quot;:&quot;location-form&quot;}]}">
+<header class="y-header_islet-search _init _live-events" data-block="y-header" data-options="{'mixins':[{'name':'location-form'}]}">
     <div class="y-header_islet-search__wrapper">
         <a class="y-header_islet-search__logo _lang_ru" href="http://www.yandex.ru">
             <img class="y-header_islet-search__logo-img" alt="Яндекс" src="//yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png">
@@ -497,11 +497,11 @@ bt.match('header__title', function (ctx) {
                 </div>
                 <div class="y-header_islet-search__input">
                     <div class="y-suggest_islet _init" data-block="y-suggest"
-                         data-options="{&quot;options&quot;:{&quot;suggestDropOptions&quot;:{&quot;view&quot;:&quot;islet-header&quot;,&quot;suggestDropItemView&quot;:&quot;islet-header&quot;},&quot;dataProviderOptions&quot;:{&quot;queryParams&quot;:{&quot;lang&quot;:&quot;ru-RU&quot;,&quot;search_type&quot;:&quot;all&quot;,&quot;fullpath&quot;:1,&quot;v&quot;:5},&quot;posQueryParamName&quot;:&quot;pos&quot;,&quot;textQueryParamName&quot;:&quot;part&quot;,&quot;disableGrouping&quot;:true}},&quot;mixins&quot;:[{&quot;name&quot;:&quot;header-suggest-configurer&quot;}]}">
+                         data-options="{'options':{'suggestDropOptions':{'view':'islet-header','suggestDropItemView':'islet-header'},'dataProviderOptions':{'queryParams':{'lang':'ru-RU','search_type':'all','fullpath':1,'v':5},'posQueryParamName':'pos','textQueryParamName':'part','disableGrouping':true}},'mixins':[{'name':'header-suggest-configurer'}]}">
                         <span class="y-input_islet-label-icons _init" data-block="y-input"><span class="y-input_islet-label-icons__label"><a class="y-input_islet-label-icons__label-link" href="/">Карты</a></span><span
                                 class="y-input_islet-label-icons__icons"><span class="y-input_islet-label-icons__close-small"></span></span><span class="y-input_islet-label-icons__context"><input
                                 class="y-input_islet-label-icons__control" id="uniq0" name="text" value="" autocomplete="off"></span></span>
-                        <div class="y-suggest-drop_islet-header" data-block="y-suggest-drop" data-options="{&quot;options&quot;:{&quot;wide&quot;:true}}"></div>
+                        <div class="y-suggest-drop_islet-header" data-block="y-suggest-drop" data-options="{'options':{'wide':true}}"></div>
                     </div>
                 </div>
             </form>
