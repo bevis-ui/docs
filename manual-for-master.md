@@ -69,15 +69,10 @@ _Так что, нет, `BEViS` - не методология._
 module.exports = function (pages) {
 
     pages.declare('index', function () {
-        return {
-            block: 'page',
-            styles: 'index.css',
-            scripts: 'index.js'
-            body: [
-                { block: 'header' },
-                { block: 'authorization' }
-            ]
-        };
+        return  [
+            { block: 'header' },
+            { block: 'authorization' }
+        ];
     });
 
 };
@@ -223,15 +218,10 @@ module.exports = function (pages) {
 Ну что, похоже на правду?
 
 ```javascript
-[
-    {
-        block: 'header'
-    },
-    {
-        block: 'authorization',
-        actionUrl: '/?task=login'
-    }
-]
+{
+    block: 'header',
+    showSearch: true
+}
 ```
 
 Пусть блоки сами решают, в какой `HTML` они должны превратиться, чтобы лучшим образом выполнить свою задачу.
