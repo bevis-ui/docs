@@ -74,13 +74,8 @@ module.exports = function (pages) {
             styles: 'index.css',
             scripts: 'index.js'
             body: [
-                {
-                    block: 'header'
-                },
-                {
-                    block: 'authorization',
-                    actionUrl: '/?task=login'
-                }
+                { block: 'header' },
+                { block: 'authorization' }
             ]
         };
     });
