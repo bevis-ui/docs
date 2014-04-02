@@ -197,11 +197,14 @@ class Input {
 ```
 
 Чтобы сделать из этого красивую картинку, отправляем этот код в http://www.plantuml.com/plantuml/form :
+
 <img src="http://www.plantuml.com/plantuml/img/Iyv9B2vMyCmhA2rHgEPI00BjzDIIiCISqbGDJIk5u9AYpBnqhbe0" />
+
 Теперь красиво и наглядно :)
 
 Двигаемся дальше. Инпут ещё должен уметь принимать в себя значение, следовательно добавим в него метод-сеттер и
 сделаем ещё одну красивую картинку:
+
 <img src="http://www.plantuml.com/plantuml/img/Iyv9B2vMyCmhA2rHgEPI00BjzDIIiCISqbGDJIk5u9AYpBnqY7WnJBmCHCBaDBbg0G00" />
 
 На этом остановимся, не будем раньше времени усложнять блок.
