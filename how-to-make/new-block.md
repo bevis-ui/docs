@@ -49,7 +49,7 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.js'}
             ],
             body: [
-                {block: 'input'}
+                {block: 'input'} // Добавьте вызов блока
             ]
         };
     });
