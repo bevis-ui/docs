@@ -575,7 +575,7 @@ modules.define(
 
 Одно из отображений можно сделать умолчательным, например `normal`, потому что именно оно используется
  на всех страницах сайта, а `active` только на одной странице. Умолчательным (по дефолту,
- если говорить сленговым языком) означает, что в декларации блока не нужно указывать `view: 'normal'`,
+ если говорить на привычном жаргон) означает, что в декларации блока не нужно указывать `view: 'normal'`,
  это вью будет добавляться автоматически.
 
 Добавим перед вызов метода `bt.setDefaultView('input', 'normal')` и в шаблонах к имени блока добавим маску `*`
@@ -594,9 +594,8 @@ module.exports = function (bt) {
 
 ```javascript
 module.exports = function (bt) {
-    bt.setDefaultView('input', 'normal');
-
-    bt.match('input*', function (ctx) {
+    bt.setDefaultView('input', 'normal'); // Добавил вызов метода
+    bt.match('input*', function (ctx) { // Добавил *-маску в имя блока
         // ...
     });
 };
@@ -609,22 +608,22 @@ module.exports = function (bt) {
     view: 'normal',
     value: 'Hello'
 }
-
-// or
+// Сгенерит <div class="input_normal"></div>
 
 {
     block: 'input',
     view: 'active',
     value: 'Hello'
 }
-
-// или вообще без view, благодаря методу  bt.setDefaultView('input', 'normal')  подставится дефолтное значение
+// Сгенерит <div class="input_active"></div>
 
 {
     block: 'input',
     value: 'Hello'
 }
-
+// Сгенерит <div class="input_normal"></div>
+// При том, что viewмы не указали вообще.
+// Дефолтное значение normal подставится благодаря методу bt.setDefaultView('input', 'normal')
 ```
 
 Проверям: не работает. Потому что нет зависимостей.
