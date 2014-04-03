@@ -459,7 +459,36 @@ var Input = inherit(YBlock, {
 provide(Input);
 ```
 
-Ещё раз всё вместе с комментариями:
+Теперь добавим пустой конструктор инстанса в блок инстанс-методов:
+
+```javascript
+var Input = inherit(YBlock, {
+    __constructor: function () {
+
+    }
+}, {
+    // статические методы
+});
+```
+
+Метод `__constructor()` запускается автоматически, когда создаётся экземпляр класса `Input`.
+
+Точно такой же метод есть в базовом классе `YBlock`, от которого `Input` наследуется.
+То есть внутри `Input` мы перезаписали конструктор, а после обязательно нужно вызвать базовый конструктор,
+чтобы он сделал всё, "что нужно". Сейчас не так важно, что базовый констуруктор такого "нужного" там делает. Важно
+запомнить, что вызов базового метода происходит так: `this.__base.apply(this, arguments)`:
+
+```javascript
+var Input = inherit(YBlock, {
+    __constructor: function () {
+        this.__base.apply(this, arguments);
+    }
+}, {
+    // статические методы
+});
+```
+
+И теперь вся заготовка вместе с комментариями:
 
 ```javascript
 modules.define(
@@ -474,6 +503,14 @@ modules.define(
         YBlock // получаем блок YBlock
     ) {
         var Input = inherit(YBlock, {
+            // Создаём свой конструктор
+            __constructor: function () {
+                // Вызываем базовый конструктор
+                this.__base.apply(this, arguments);
+
+                // здесь описываем то, что происходит сразу после создания инстанса класса
+            },
+
             // здесь опишем инстанс-методы класса Input
         }, {
             // здесь опишем статические методы
@@ -497,15 +534,17 @@ modules.define(
     ['inherit', 'block'],
     function (provide, inherit, YBlock) {
         var Input = inherit(YBlock, {
-            /**
-             * @returns {String}
-             */
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                console.log(this.getValue());
+            },
+
             getValue: function() {
                 return this.getDomNode().val();
             },
-            /**
-             * @param {String} value
-             */
+
+
             setValue: function(value) {
                 this.getDomNode().val(value);
             }
@@ -521,13 +560,9 @@ modules.define(
 
 Осталось убедиться, что все работает.
 
-----
-
-Подумать, как проиллюстрировать работу этого кода.
-
-Показать через консоль Firebug?
-
-----
+Открываем на странице firebug-консоль,
+обновляем страницу и видим в консоли ровно тот же текст, который есть сейчас в текстовом поле. Это отработал метод
+`getValue()`.
 
 # Нужны разные отображения?
 
