@@ -51,18 +51,19 @@ module.exports = function (pages) {
 
 <img src="http://bevis-ui.github.io/docs/images/input-design.png" width="557" height="539" />
 
-Дизайн без особых затей.
+Дизайн без особых затей:
 
-* Текстовое поле плоское, белый фон, серая рамка.
-* Когда поле получает фокус, вокруг рамки появляется жёлтое свечение.
-* Когда поле пустое, в нём показывается текст-приглашение. В всем мире этот текст принято называть `placeholder`.
-* Когда пользователь вводит в поле текст, плейсхолдер исчезает, и появляется крестик. Клик по крестику должен очистить
-введённый пользователм текст.
-* Ещё дизайнер предусмотрел разные размеры блока.
-* И, конечно, предусмотрел неактивное состояние, когда поле недоступно для действий пользователя.
+* текстовое поле плоское, белый фон, серая рамка
+* жёлтое свечение вокруг поля, когда поле получает фокус
+* текст-приглашение, если поле пустое
+* крестик для очистки поля
 
-Сразу стало ясно, что одним DOM-узлом нам не обойтись — придётся реализовать дополнительный элемент блока `крестик`,
-потому что такого нативного браузерного контрола, к сожалению, не существует. Значит блок `input` придётся усложнить:
+Ещё дизайнер предусмотрел разные размеры блока. И, конечно, предусмотрел неактивное состояние,
+когда поле недоступно  для действий пользователя.
+
+Сразу понятно, что одним DOM-узлом мы не обойдёмся, придётся реализовать дополнительный элемент `крестик`,
+потому что, к сожалению, такого нативного браузерного контрола не существует. Значит блок `input`
+придётся усложнить:
 
 Сейчас он выглядит так:
 
@@ -74,13 +75,30 @@ module.exports = function (pages) {
 
 ```html
 <div class="input">
-    <input class="input__control" type="text"/>
+    <input class="input__control" type="text" placeholder="" value="" name=""/>
     <div class="input__close"></div>
 </div>
 ```
 
-Текстовое поле станет одним из элементов блока, а рядом с ним создадим брата — второй элемент "крестик",
-который разместим над текстовым полем, чтобы визуально казалось, будно он лежит справа внутри поля.
+Текстовое поле, как и элемент "крестик" станут детьми блока, его элементами. И как мы видим,
+у текстового поля появится атрибут `placeholder`, в котором и будет храниться тот самый
+текст-приглашение.
+
+Мы не хотим хардкодить текст-приглашение, потому что блок `input` мы захотим использовать в разных формах. По той же
+причине мы не будем хардкодить `name` текстового поля. Мы расширим API блока — мы разрешим при декларации блока
+указывать значения для этих атрибутов. Для этого в `/pages/test-page/test-page.page.js` в вызове блока добавим два
+новых поля - `name` и `placeholder`:
+
+```javascript
+{
+    block: 'input',
+    value: 'Привет, Бивис!',
+    name: 'loginField',
+    placeholder: 'на сайте'
+}
+```
+
+И теперь поддержим все изменения в шаблонах.
 
 ## Усложним HTML-структуру
 
@@ -109,10 +127,16 @@ module.exports = function (bt) {
     bt.match('input', function (ctx) {
         ctx.enableAutoInit();
 
+        var value = ctx.getParam('value');
+        var name = ctx.getParam('name');
+        var placeholder = ctx.getParam('placeholder');
+
         ctx.setContent([
             {
                 elem: 'control',
-                inputValue: ctx.getParam('value')
+                inputValue: value,
+                inputName: name,
+                placeholder: placeholder
             },
             {
                 elem: 'close'
@@ -124,14 +148,28 @@ module.exports = function (bt) {
 ```
 
 Мы выкинули метод `ctx.setTag('input')`, потому что обертка должна быть тегом `div`,
-а такой тег генерится шаблонизатором по умолчанию даже если мы не указали, какой тег генерить.
+а такой тег генерится шаблонизатором по умолчанию даже если мы этого не указали явно.
 
-И мы вызвали метод `ctx.setContent()`, в который передали массив элементов. Элементы описаны тоже в `btjson`. У
-элементов есть только одно зарезервированное слово - это `elem`. Мы задекларировали,
-что внутри блока `input` появятся  два элемента: `control` и `close`.
+Мы создали локальные переменные `value`, `name`, `placeholder` и сохранили в них значения параметров из контекста с
+помощью метода `ctx.getParam()`. Из какого такого контекста? В контексте чего работает шаблон блока? Шаблон блока
+работает в контексте данных, которые описаны в `test-page.page.js`, то есть фактически в контексте этого
+фрагмента страницы:
 
-Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но если посмотреть в HTML-код страницы,
- мы увидим там такое:
+ ```javascript
+{
+    block: 'input',
+    value: 'Привет, Бивис!',
+    name: 'loginField',
+    placeholder: 'на сайте'
+}
+```
+
+Затем мы вызвали метод `ctx.setContent()`, в который передали массив элементов. Мы решили,
+что внутри блока будут жить два элемента - те самые `input__control` и `input__close`. Элементы описываются так же,
+как блок, с той лишь разницей, что вместо слова `block` мы зовём элемент словом `elem`.
+
+Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но заглянув в HTML-код страницы,
+мы увидим почти то, что нужно:
 
 ```html
 <div class="input" data-block="input">
@@ -140,8 +178,8 @@ module.exports = function (bt) {
 </div>
 ```
 
-То, что надо. Осталось сгенерить правильный тег для `input__control` и передать в него значение для атрибута `value`.
-Добавим ещё один шаблон:
+Осталось сгенерить правильный тег для `input__control` и передавать в него значение для атрибутов
+`value`, `name` и `placeholder`. Для этого добавим новый шаблон:
 
 ```javascript
 module.exports = function (bt) {
@@ -149,10 +187,16 @@ module.exports = function (bt) {
     bt.match('input', function (ctx) {
         ctx.enableAutoInit();
 
+        var value = ctx.getParam('value');
+        var name = ctx.getParam('name');
+        var placeholder = ctx.getParam('placeholder');
+
         ctx.setContent([
             {
                 elem: 'control',
-                inputValue: ctx.getParam('value')
+                inputValue: value,
+                inputName: name,
+                placeholder: placeholder
             },
             {
                 elem: 'close'
@@ -164,21 +208,48 @@ module.exports = function (bt) {
         ctx.setTag('input');
 
         var currentValue = ctx.getParam('inputValue');
+        var currentName = ctx.getParam('inputName');
+        var currentPlaceholder = ctx.getParam('placeholder');
+
         ctx.setAttr('value', currentValue);
-        ctx.setAttr('name', 'loginField');
+        ctx.setAttr('name', currentName);
+        ctx.setAttr('placeholder', currentPlaceholder);
     });
 
 };
 ```
 
-Смотрим в браузере. Да, теперь всё отлично, можно писать стили:
+В шаблоне для `input__control` контекст меняется. Шаблон этого элемента работает в контексте данных,
+которые пришли к нему из предыдущего шаблона, то есть в контексте вот этого `btjson`:
+
+```javascript
+{
+    elem: 'control',
+    inputValue: ctx.getParam('value'),
+    inputName: ctx.getParam('name'),
+    placeholder: ctx.getParam('placeholder')
+}
+```
+
+Именно поэтому в шаблоне элемента `control` мы читаем ожидаем параметры под другими именами (я специально назвал их не
+теми же переменными, что в родительском шаблоне, чтобы вы ухватили идею):
+
+```javascript
+var currentValue = ctx.getParam('inputValue');
+var currentName = ctx.getParam('inputName');
+var currentPlaceholder = ctx.getParam('placeholder');
+```
+
+Смотрим в браузере. Да, теперь всё отлично, структура приходит.
 
 ```html
 <div class="input _init" data-block="input">
-    <input class="input__control" value="Привет, Бивис" name="loginField">
+    <input class="input__control" value="Привет, Бивис" name="loginField" placeholder="на сайте">
     <div class="input__close"></div>
 </div>
 ```
+
+Наконец-то займёмся стилями.
 
 ## Стили для блока и его элементов
 
