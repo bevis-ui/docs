@@ -67,7 +67,7 @@ module.exports = function (pages) {
 
 Предположим, дизайнер прислал нам эскиз для этого блока. Вот реальный эскиз из Яндекса.
 
-<img src="https://www.evernote.com/shard/s9/sh/b48f61bb-77e7-43c2-b21a-6ffffcebb1db/c0e7c0ff41f58a0e86b88c486d9ecefe/res/9789ea88-f9c0-4561-8d10-bb16e18a84df/skitch.png">
+<img src="http://bevis-ui.github.io/docs/images/input-design.png">
 
 
 
