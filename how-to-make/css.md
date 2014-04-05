@@ -110,7 +110,7 @@ module.exports = function (bt) {
         ctx.setContent([
             {
                 elem: 'control',
-                value: ctx.getParam('value')
+                inputValue: ctx.getParam('value')
             },
             {
                 elem: 'close'
@@ -128,7 +128,7 @@ module.exports = function (bt) {
 элементов есть только одно зарезервированное слово - это `elem`. Мы задекларировали,
 что внутри блока `input` появятся  два элемента: `control` и `close`.
 
-Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но если посмотреть в HTML-код странцы,
+Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но если посмотреть в HTML-код страницы,
  мы увидим там такое:
 
 ```html
@@ -138,15 +138,15 @@ module.exports = function (bt) {
 </div>
 ```
 
-То, что надо. Остолось сгенерить правильные теги для input__control и для input__close,
-и передать значение в value текстового поля. Напишем рядом шаблоны для элементов:
+То, что надо. Осталось сгенерить правильные теги для `input__control` и для `input__close`,
+и передать значение в `value` текстового поля. Добавим ещё два шаблона:
 
 
 ```javascript
     bt.match('input__control', function (ctx) {
         ctx.setTag('input');
 
-        var currentValue = ctx.getParam('value');
+        var currentValue = ctx.getParam('inputValue');
         ctx.setAttr('value', currentValue);
         ctx.setAttr('name', 'loginField');
     });
