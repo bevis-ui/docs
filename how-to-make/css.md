@@ -62,8 +62,16 @@ module.exports = function (pages) {
 * И, конечно, предусмотрел неактивное состояние, когда поле недоступно для действий пользователя.
 
 Сразу стало ясно, что одним DOM-узлом нам не обойтись — придётся реализовать дополнительный элемент блока `крестик`,
-потому что такого нативного браузерного контрола, к сожалению, не существует. Значит блок `input` нужно немного
-сложнить:
+потому что такого нативного браузерного контрола, к сожалению, не существует. Значит блок `input` придётся усложнить:
+
+Сейчас он выглядит так:
+
+```html
+<input class="input" type="text"/>
+```
+
+А мы сделаем его таким:
+
 ```html
 <div class="input">
     <input class="input__control" type="text"/>
@@ -71,7 +79,10 @@ module.exports = function (pages) {
 </div>
 ```
 
-Для этого откроем файл `/blocks/input/input.bt.js` и немного его видоизменим. Сейчас он выглядит вот так:
+Текстовое поле станет одним из элементов блока, а рядом с ним создадим брата — второй элемент "крестик",
+который разместим над текстовым полем, чтобы визуально казалось, будно он лежит справа внутри поля.
+
+Откроем файл `/blocks/input/input.bt.js`, сейчас он выглядит вот так:
 
 ```javascript
 module.exports = function (bt) {
@@ -87,8 +98,72 @@ module.exports = function (bt) {
 };
 ```
 
-Изменим его пошагово.
+Для начала перестанем выливать тег `input`. Пусть наш блок будет блочным DOM-узлом,
+а уже внутри него пусть находятся два элемента - текстовое поле и крестик:
 
+```javascript
+module.exports = function (bt) {
+
+    bt.match('input', function (ctx) {
+        ctx.enableAutoInit();
+
+        ctx.setContent([
+            {
+                elem: 'control',
+                value: ctx.getParam('value')
+            },
+            {
+                elem: 'close'
+            }
+        ]);
+    });
+
+};
+```
+
+Мы выкинули метод `ctx.setTag('input')`, потому что обертка должна быть тегом `div`,
+а такой тег генерится шаблонизатором по умолчанию даже если мы не указали, какой тег генерить.
+
+И мы вызвали метод `ctx.setContent()`, в который передали массив элементов. Элементы описаны тоже в `btjson`. У
+элементов есть только одно зарезервированное слово - это `elem`. Мы задекларировали,
+что внутри блока `input` появятся  два элемента: `control` и `close`.
+
+Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но если посмотреть в HTML-код странцы,
+ мы увидим там такое:
+
+```html
+<div class="input" data-block="input">
+    <div class="input__control"></div>
+    <div class="input__close"></div>
+</div>
+```
+
+То, что надо. Остолось сгенерить правильные теги для input__control и для input__close,
+и передать значение в value текстового поля. Напишем рядом шаблоны для элементов:
+
+
+```javascript
+    bt.match('input__control', function (ctx) {
+        ctx.setTag('input');
+
+        var currentValue = ctx.getParam('value');
+        ctx.setAttr('value', currentValue);
+        ctx.setAttr('name', 'loginField');
+    });
+
+    bt.match('input__close', function (ctx) {
+        ctx.setTag('span');
+    });
+```
+
+Смотрим в браузере. Да, теперь всё, как нам надо.
+
+```html
+<div class="input _init" data-block="input">
+    <input class="input__control" value="Привет, Бивис" name="loginField">
+    <span class="input__close"></span>
+</div>
+```
 
 ----
 
