@@ -243,12 +243,13 @@ module.exports = function (bt) {
 которые пришли к нему из предыдущего шаблона, то есть в контексте вот этого `btjson`:
 
 ```javascript
-{
-    elem: 'control',
-    inputValue: ctx.getParam('value'),
-    inputName: ctx.getParam('name'),
-    placeholder: ctx.getParam('placeholder')
-}
+        ctx.setContent([
+            {
+                elem: 'control',
+                inputValue: value,
+                inputName: name,
+                placeholder: placeholder
+            }...
 ```
 
 Именно поэтому в шаблоне элемента `control` мы читаем ожидаем параметры под другими именами (я специально назвал их не
