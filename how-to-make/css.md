@@ -243,19 +243,23 @@ module.exports = function (bt) {
 которые пришли к нему из предыдущего шаблона, то есть в контексте вот этого `btjson`:
 
 ```javascript
-        ctx.setContent([
-            {
-                elem: 'control',
-                inputValue: value,
-                inputName: name,
-                placeholder: placeholder
-            }...
+ctx.setContent([
+{
+    elem: 'control',
+    inputValue: value,
+    inputName: name,
+    placeholder: placeholder
+}
 ```
 
-Именно поэтому в шаблоне элемента `control` мы ожидаем параметры под другими именами (я специально назвал их не
-теми же переменными, что в родительском шаблоне, чтобы вы ухватили идею):
+Именно поэтому в шаблоне элемента `control` мы ожидаем параметры под другими именами. Я специально назвал их иначе,
+нежели в родительском шаблоне, чтобы вы ухватили идею.
 
-В родительском я их получал так и "прокинул" в `btjson` для элемента `control`
+Ещё раз о контексте, потому что это важный момент.
+
+В шаблоне для `input` я получил параметры из контекста `test-page.page.js`, а потом прокинул их значения в элемент
+`control`:
+
 ```javascript
 var value = ctx.getParam('value');
 var name = ctx.getParam('name');
@@ -270,8 +274,9 @@ ctx.setContent([
 }
 ```
 
-В дочернем я получил ровно эти же значения, но уже из параметров самого элемента `control` и создал атрибуты для
-html-тега:
+В шаблоне дочернего `input__control` я получил ровно эти же значения, но уже из параметров самого элемента
+`control` и создал атрибуты для html-тега:
+
 ```javascript
 var currentValue = ctx.getParam('inputValue');
 var currentName = ctx.getParam('inputName');
@@ -282,7 +287,7 @@ ctx.setAttr('name', currentName);
 ctx.setAttr('placeholder', currentPlaceholder);
 ```
 
-Смотрим в браузере. Да, теперь всё отлично, структура приходит.
+Теперь смотрим в браузере. Да, всё отлично, структура приходит.
 
 ```html
 <div class="input _init" data-block="input">
