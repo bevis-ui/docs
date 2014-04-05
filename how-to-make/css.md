@@ -20,7 +20,10 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.js'}
             ],
             body: [
-                {block: 'input'}
+                {
+                    block: 'input',
+                    value: 'Привет, Бивис!'
+                }
             ]
         };
     });
@@ -58,10 +61,9 @@ module.exports = function (pages) {
 * Ещё дизайнер предусмотрел разные размеры блока.
 * И, конечно, предусмотрел неактивное состояние, когда поле недоступно для действий пользователя.
 
-Сразу стало ясно, что одним DOM-узлом нам не обойтись. Нужно реализовать дополнтельный элемент блока - крестик.
-Нативного браузерного контрола в текстовом поле, к сожалению, нет. Значит блок `input` превратится примерно в такой
-`HTML`
-
+Сразу стало ясно, что одним DOM-узлом нам не обойтись — придётся реализовать дополнительный элемент блока `крестик`,
+потому что такого нативного браузерного контрола, к сожалению, не существует. Значит блок `input` нужно немного
+сложнить:
 ```html
 <div class="input">
     <input class="input__control" type="text"/>
@@ -69,7 +71,23 @@ module.exports = function (pages) {
 </div>
 ```
 
+Для этого откроем файл `/blocks/input/input.bt.js` и немного его видоизменим. Сейчас он выглядит вот так:
 
+```javascript
+module.exports = function (bt) {
+
+    bt.match('input', function (ctx) {
+        ctx.enableAutoInit();
+        ctx.setTag('input');
+
+        var currentValue = ctx.getParam('value');
+        ctx.setAttr('value', currentValue);
+    });
+
+};
+```
+
+Изменим его пошагово.
 
 
 ----
