@@ -257,14 +257,13 @@ ctx.setContent([
 
 Ещё раз о контексте, потому что это важный момент.
 
-В шаблоне для `input` я получил параметры из контекста `test-page.page.js`, а потом прокинул их значения в элемент
-`control`:
-
 ```javascript
+// В шаблоне для `input` я получил параметры из контекста `test-page.page.js`
 var value = ctx.getParam('value');
 var name = ctx.getParam('name');
 var placeholder = ctx.getParam('placeholder');
 
+// а потом прокинул их значения в элемент `control`
 ctx.setContent([
 {
     elem: 'control',
@@ -274,14 +273,14 @@ ctx.setContent([
 }
 ```
 
-В шаблоне дочернего `input__control` я получил ровно эти же значения, но уже из параметров самого элемента
-`control` и создал атрибуты для html-тега:
-
 ```javascript
+// В шаблоне дочернего `input__control` я получил ровно эти же значения,
+// но уже из параметров самого элемента `control`
 var currentValue = ctx.getParam('inputValue');
 var currentName = ctx.getParam('inputName');
 var currentPlaceholder = ctx.getParam('placeholder');
 
+// и создал атрибуты для html-тега:
 ctx.setAttr('value', currentValue);
 ctx.setAttr('name', currentName);
 ctx.setAttr('placeholder', currentPlaceholder);
