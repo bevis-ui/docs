@@ -389,7 +389,7 @@ header {
 Только эти шаблоны вы пишете не в `CSS`-файле, а в `index.bt.js`.
 Посмотрите ещё раз на схему, чтобы сориентироваться.
 
-[слайд](http://bevis-ui.github.io/bevis-and-bt-speech/?full#3)
+<img src="http://bevis-ui.github.io/docs/images/mvc-bevis.jpg" alt="MVC BEViS" style="width: 800px;">
 
 А теперь вернёмся к шаблону
 ```javascript
