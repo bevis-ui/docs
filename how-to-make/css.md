@@ -74,7 +74,7 @@ module.exports = function (pages) {
 ```html
 <div class="input">
     <input class="input__control" type="text" placeholder="" value="" name=""/>
-    <div class="input__close"></div>
+    <div class="input__clear"></div>
 </div>
 ```
 
@@ -154,7 +154,7 @@ module.exports = function (bt) {
                 placeholder: placeholder
             },
             {
-                elem: 'close'
+                elem: 'clear'
             }
         ]);
     });
@@ -184,7 +184,7 @@ module.exports = function (bt) {
 получили значение параметра из контекста.
 
 Затем мы вызвали метод `ctx.setContent()`, в который передали массив элементов. Мы решили,
-что внутри блока будут жить два элемента - те самые `input__control` и `input__close`. Элементы описываются так же,
+что внутри блока будут жить два элемента - те самые `input__control` и `input__clear`. Элементы описываются так же,
 как блок, с той лишь разницей, что вместо слова `block` мы зовём элемент словом `elem`.
 
 Если сейчас обновить страницу в браузере, текстовое поле со страницы исчезнет, но заглянув в HTML-код страницы,
@@ -193,7 +193,7 @@ module.exports = function (bt) {
 ```html
 <div class="input" data-block="input">
     <div class="input__control"></div>
-    <div class="input__close"></div>
+    <div class="input__clear"></div>
 </div>
 ```
 
@@ -219,7 +219,7 @@ module.exports = function (bt) {
                 placeholder: placeholder
             },
             {
-                elem: 'close'
+                elem: 'clear'
             }
         ]);
     });
@@ -291,13 +291,26 @@ ctx.setAttr('placeholder', currentPlaceholder);
 ```html
 <div class="input _init" data-block="input">
     <input class="input__control" value="Привет, Бивис" name="loginField" placeholder="на сайте">
-    <div class="input__close"></div>
+    <div class="input__clear"></div>
 </div>
 ```
 
 Наконец-то займёмся стилями.
 
 ## Стили для блока и его элементов
+
+Возвращаемся в `/blocks/input/input.styl` и начнём :)
+
+Если вы выполнили шаги в [предыдущем руководстве](new-block.md), то файл у вас выглядит совершенно бесполезно.
+У меня там написано вот что:
+
+```css
+.input {
+    border: 1px solid red;
+}
+```
+
+
 
 ## Стили состояний
 
