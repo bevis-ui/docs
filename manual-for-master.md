@@ -286,11 +286,11 @@ module.exports = function (pages) {
 
 Я напомню, шаблоны эти пишутся вот в этом участке схемы.
 
-[слайд](http://bevis-ui.github.io/bevis-and-bt-speech/?full#17)
+<img src="http://bevis-ui.github.io/docs/images/mvc-templates.jpg" alt="Утро" style="width: 800px;">
 
 И в случае с `PHP/Smarty` пишутся в файле с расширением `*.tpl.php`
 
-[слайд](http://bevis-ui.github.io/bevis-and-bt-speech/?full#18)
+<img src="http://bevis-ui.github.io/docs/images/mvc-php-templates.jpg" alt="Утро" style="width: 800px;">
 
 В бивисе мы шаблоны пишем в этом же месте схемы. Отличия только в том, что мы пишем шаблоны в файлах с расширением `*.bt.js`
 и шаблоны пишем не такие, а другие. Декларативные.
