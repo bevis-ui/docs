@@ -3,22 +3,13 @@
 Вы уже склонировали `bevis-stub`, запустили в корне проекта команду `make`, увидели,
 как качаются какие-то библиотеки (возможно ждали долго, но это только первый раз).
 
-Но вот в консоль перестали сыпаться сообщения^ и последнее, что вы видите, это что-то похожее на это:
+Но вот в консоль перестали сыпаться сообщения, и последнее, что вы видите, это нечто такое:
 
 ```
 ENV= node_modules/.bin/enb make
 19:16:25.764 - build started
 19:16:25.982 - [rebuild] [build/index/index.levels] levels
-19:16:25.982 - [rebuild] [build/test/test.levels] levels
 19:16:25.982 - [rebuild] [build/index/index.bemdecl.js] file-provider
-19:16:25.986 - [rebuild] [build/test/test.bemdecl.js] file-provider
-19:16:25.997 - [rebuild] [build/test/test.deps.js] deps-with-modules
-19:16:25.998 - [rebuild] [build/test/test.files] files
-19:16:25.998 - [rebuild] [build/test/test.dirs] files
-19:16:26.085 - [rebuild] [build/test/test.js] js
-19:16:26.086 - [rebuild] [build/test/test.css] css-stylus-with-autoprefixer
-19:16:26.087 - [rebuild] [build/test/_test.js] file-copy
-19:16:26.088 - [rebuild] [build/test/_test.css] file-copy
 19:16:26.093 - [rebuild] [build/index/index.deps.js] deps-with-modules
 19:16:26.093 - [rebuild] [build/index/index.files] files
 19:16:26.093 - [rebuild] [build/index/index.dirs] files
@@ -44,7 +35,7 @@ DEBUG: Watching directory '~/bevis-stub/configs' for changes.
 19:16:26 - info: app started on 8080
 ```
 
-Если всё так, проект собран, сервер запущен (на 8080 порту, но это можно и поменять), и если теперь вы в браузере 
+Это означает, что проект собран, сервер запущен на 8080 порту (но это можно и поменять), и если теперь вы в браузере 
 запросите `localhost:8080`, то увидите нашу страничку "Привет, BEViS!".
 
 ----
