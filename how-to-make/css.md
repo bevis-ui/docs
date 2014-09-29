@@ -824,8 +824,8 @@ module.exports = function (bt) {
 
 ## Файловая система для `view`
 
-У нас получилось так, что все-все стили оказались в одном файле. Файл рискует стать большим. На наш взгляд это совсем  
-неудобно. Так можно. Но нам неудобно. Мы стараемся разбивать стили на файлы согласно простому правилу: "Миксин - в 
+У нас получилось так, что все-все стили оказались в одном файле. Файл рискует стать большим. На наш взгляд это совсем
+ неудобно. Так можно. Но нам неудобно. Мы стараемся разбивать стили на файлы согласно простому правилу: "Миксин - в 
 отдельный файл с именем миксина, вью - в отдельный файл с именем вью".
 
 Работать с таким кодом легче, мы редактируем всегда только то, что нужно в данный момент, 
@@ -853,13 +853,13 @@ module.exports = function (bt) {
  адресу `/build/test/test.css`. Там увидите такое:
 
 ```css 
-/* /Users/makishvili/projects/bevis-ui/bevis-stub-input/blocks/page/page.styl:begin */
+/* /bevis/blocks/page/page.styl:begin */
 .page {
   background: #eaeaea url(../../blocks/page/page.png);
 }
-/* /Users/makishvili/projects/bevis-ui/bevis-stub-input/blocks/page/page.styl:end */
-/* /Users/makishvili/projects/bevis-ui/bevis-stub-input/blocks/input/input.styl:begin */
-/* /Users/makishvili/projects/bevis-ui/bevis-stub-input/blocks/input/input.styl:end */
+/* /bevis/blocks/page/page.styl:end */
+/* /bevis/blocks/input/input.styl:begin */
+/* /bevis/blocks/input/input.styl:end */
 ```
 
 Видно, что сборщик заглядывает в файл `input.styl`, но оттуда ничего не забирает, потому что там только миксин. А вот
