@@ -1002,7 +1002,7 @@ S — [S]tate
 
 Начать работать на бивисе очень просто:
 ```
-git clone git@github.com:bevis-ui/bevis-stub.git your-project
+git clone https://github.com/bevis-ui/bevis-stub.git your-project
 cd your-project
 make
 ```
