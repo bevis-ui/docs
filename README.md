@@ -1,6 +1,6 @@
 ## Быстрый старт
 ```
-git clone git@github.com:bevis-ui/bevis-stub.git your-project
+git clone https://github.com/bevis-ui/bevis-stub.git your-project
 cd your-project
 make
 ```
