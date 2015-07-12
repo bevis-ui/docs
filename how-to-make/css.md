@@ -921,7 +921,7 @@ module.exports = function (bt) {
         // ...
     }
     
-    bt.match('input_large__close', function (ctx) {
+    bt.match('input_large__clear', function (ctx) {
         // ...
     }
 ```
@@ -937,7 +937,7 @@ module.exports = function (bt) {
         // ...
     }
     
-    bt.match('input*__close', function (ctx) {
+    bt.match('input*__clear', function (ctx) {
         // ...
     }
 ```
