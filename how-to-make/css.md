@@ -909,6 +909,39 @@ module.exports = function (bt) {
 // Сгенерит <div class="input_active"></div>
 ```
 
+Маску нужно добавлять к матчеру каждого элемента. Иначе шаблон не выполнится.
+
+Было:
+```javascript
+    bt.match('input_large', function (ctx) {
+        // ...
+    }
+    
+    bt.match('input_large__control', function (ctx) {
+        // ...
+    }
+    
+    bt.match('input_large__close', function (ctx) {
+        // ...
+    }
+```
+
+Стало
+```javascript
+module.exports = function (bt) {
+    bt.match('input*', function (ctx) {
+        // ...
+    }
+    
+    bt.match('input*__control', function (ctx) {
+        // ...
+    }
+    
+    bt.match('input*__close', function (ctx) {
+        // ...
+    }
+```
+
 А ещё можно задавать какое-либо `view` как дефолтное. Чтобы даже если вы не задекларировали никакого `view`, оно
 сгенерировалось бы само. Это нужно, когда на сайте большинство инпутов имеет размер `normal`. Тогда мы везде
 декларируем блок без `view`:
