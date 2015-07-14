@@ -699,7 +699,7 @@ bt.match('header__image', function (ctx) {
 ```
 <div class="header">
     <a class="header__logo" href="/">
-        <img src="http://yandex.st/logo.png" alt="Яндекс лого"/>
+        <img class="header__image" src="http://yandex.st/logo.png" alt="Яндекс лого"/>
     </a>
     <h1 class="header__title">Найдётся всё!</h1>
 </div>
