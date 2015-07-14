@@ -611,8 +611,10 @@ modules.define(
                 // Обрабатываем клик по крестику
                 this._bindTo(this._clear, 'click', this._onClearClicked);
 
-                // Слушаем событие 'keypress', которое выбросил <input>
+                // Слушаем события, которые выбросил <input>
                 this._bindTo(this._control, 'keypress', this._onKeyPressed);
+                this._bindTo(this._control, 'focus', this.focus);
+                this._bindTo(this._control, 'blur', this.blur);
             },
 
             /**
@@ -629,9 +631,11 @@ modules.define(
              * Устанавливает значение к текстовое поле
              *
              * @param {String} value Переданное значение
+             * @returns {Input}
              */
             setValue: function(value) {
                 this._control.val(value);
+                return this;
             },
 
             /**
@@ -769,7 +773,7 @@ _onKeyPressed: function (e) {
    
 Сейчас мы всё больше пишем `javascript`-приложения, данные с полей форм собираем с помощью `js` и отправляем их на 
 сервер с помощью XMLHTTPRequest. Это я к тому, что тег `<form>` нам особо и не нужен теперь. Разве что в качестве  
-фоллбека (а вдруг ещё есть пользователи, которые отключают `Javascript` в браузере?). А что нам нужно - так это 
+фоллбека (а вдруг ещё есть пользователи, которые отключают `Javascript` в браузере?). А что нам точно нужно - так это 
 js-компонент, который будет исполнять роль формы. Именно он будет подписываться на кастомное событие 
 `input-submitted`, получать данные из него и дальше что-то делать (сейчас не суть важно что).
  
@@ -780,10 +784,125 @@ make block
 # Введите имя блока: form
 ```
 
-Посмотрите, по адресу `blocks/form` появился новый блок.
+Посмотрите, по адресу `blocks/form` появился новый блок. Его bt-шаблон уныл и в стилях ни строчки осмысленного 
+кода. Пусть так и будет. Нам не нужны ни какие-то особенные шаблоны, ни стили. Нам интересно другое. И это так
+ прекрасно, что я тороплюсь вам об этом рассказать.
  
+Давайте отредактируем `pages/test-page/test-page.page.js`, чтобы у вас получилось как у меня:
 
+```javascript
+module.exports = function (pages) {
+    pages.declare('test-page', function (params) {
+        var options = params.options;
+        return {
+            block: 'page',
+            title: 'test page',
+            styles: [
+                {url: options.assetsPath + '.css'}
+            ],
+            scripts: [
+                {url: options.assetsPath + '.js'}
+            ],
+            body: [
+                {
+                    block: 'form'
+                }
+            ]
+        };
+    });
+};
+```
+
+Мы выкинули инпут и задекларировали форму. Можете быстро глянуть в браузере - там ничего нет. Зависимость не добавили!
+
+Добавим зависимость к `form` в `pages/test-page/test-page.deps.yaml`, чтобы у вас получилось как у меня:
+
+```
+- page
+- block: block
+  elem: auto-init
+- input
+- form
+```
+
+Проверяем в браузере - да, теперь "форма" отредерилась.
+
+Чтобы клиентский `js`-код работал, в `bt`-шаблон добавим строку `ctx.enableAutoInit();`
+
+```javascript
+module.exports = function (bt) {
+    bt.match('form', function (ctx) {
+        ctx.enableAutoInit();
+        ctx.setTag('span');
+        ctx.setContent('Содержимое блока');
+    });
+};
+```
  
+А теперь мы налету будем генерить `input`!
+ 
+ Открываем `blocks/form/form.js` и пишем:
+
+```javascript
+modules.define(
+    'form',
+    ['inherit', 'block', 'input'],
+    function (provide, inherit, YBlock, Input) {
+        var form = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                // Создаём инпут
+                this._greetingInput = new Input();
+
+                // Рендерим форму
+                this._render();
+            },
+
+            /**
+             * Рендерит все контролы в форме
+             */
+            _render: function () {
+                var form = this.getDomNode();
+                var greeting = this._greetingInput.getDomNode();
+
+                greeting.appendTo(form);
+            }      
+        }, {
+            getBlockName: function () {
+                return 'form';
+            }
+        });
+
+        provide(form);
+});
+```
+Смотрите внимательно, я в зависимостях указал модуль `input` (3-я и 4-я строки)
+
+А потом в конструкторе формы очень красиво, коротко, понятно сказал:
+```javascript
+// Создаём инпут
+this._greetingInput = new Input();
+```
+
+Как только я это сказал, тут же (в памяти браузера) возник новый экземпляр класса `Input` и сохранился в 
+поле `_greetingInput`. 
+
+А как только я "заапендил" этот экземпляр в `DOM` дерево, он тут же инициализовался и готов к работе.
+
+И в браузере отобразился инпут, который умеет слушать клики на крестике, нажатие клавиши `Enter` и всё другое.
+
+Красиво, коротко, понятно: `new Input()` и готово.
+
+Да, это ещё не всё. Ведь можно в конструктор инпута передавать параметры, как мы это делали в bt-шаблоне.
+
+```javascript
+this._greetingInput = new Input({
+    value: 'Привет, Бивис',
+    name: 'loginField',
+    placeholder: 'Инпут на сайте'
+});
+```
  
 ----
 
