@@ -391,11 +391,152 @@ _onClearClicked: function () {
 },
 ```
 
-Проверям, в консоли видим сообщение: "_onClearClicked: Крестик нажат". Успех.
+Проверям. Если в консоли сообщение: "_onClearClicked: Крестик нажат", значит успех.
 
-Мы только что создали собственный приватный метод блока `Input`. Именно в нём мы будем очищать текстовое поле ввода. 
-Напишем для метода `JSDoc`:
+Мы только что создали собственный приватный метод блока `Input`. Именно в нём мы будем очищать текстовое поле ввода.
+
+Кстати, у нас же есть метод `setValue`, который предназначен для установки значения в текстовое поле. Воспользуемся 
+им, только будем устанавливать пустую строку.
+
+```javascript
+_onClearClicked: function () {
+    this.setValue('');
+},
+```
+
+Проверяем, кликаем на крестик... и ничего не происходит. Это почему вдруг?
+
+Ну, конечно, вот же ошибка. В методе `setValue` написано:
+```javascript
+setValue: function(value) {
+    this.getDomNode().val(value);
+}
+```
+
+Если я правильно помню, функция `val` — это `jQuery` функция, которая отлично устанавливает значение в текстовые поля 
+формы. Проблема в том, что тот объект, который возвращает некий метод `this.getDomNode()`, не является `<input>`.  А 
+что это такое вообще — `this.getDomNode()`?
+
+Знакомьтесь, новый метод `YBlock` — метод `getDomNode`:
+```javascript
+/**
+ * Возвращает DOM-элемент данного блока.
+ *
+ * @returns {jQuery}
+ */
+getDomNode: function () {
+    return this._node;
+}
+```
+
+Получается, что мы пытаемся вызвать `jQuery`-функцию `val()` от DOM-элемента `<div class="input">...</div>`?
  
+Давайте проверим. Добавим `console.log` в метод `setValue`:
+```javascript
+setValue: function(value) {
+    console.log(this.getDomNode());
+
+    this.getDomNode().val(value);
+}
+```javascript
+
+В консоли видим jQuery-представление блока целиком, но никак не jQuery элемента `<input>`:
+```javascript
+{
+    0: 'div.input_large._init',
+    context: 'div.input_large._init',
+    length: 1,
+    selector: '',
+    __proto__: x[0]
+}
+```
+
+Ну да, мы же в файле [css.md](css.md) начинали с того, что блок 'input' был представлен только DOM-элементом `<input 
+class="input">` и тогда же мы создавали `js`-заготовку, в которой описали метод `setValue()`. В тот момент этот метод 
+работал правильно, потому что `this.getDomNode()` возвращал `jQuery`-представление текстового поля формы, и функция 
+`val` работала корректно.
+ 
+А чуть позже мы усложнили `HTML`-структуру блока, но `js`-код поправить забыли.
+
+Вот как выглядит `HTML` блока сейчас:
+```html
+<div class="input_large _init" data-block="input">
+    <input class="input_large__control" value="Привет, Бивис" name="loginField" placeholder="Инпут на сайте">
+    <div class="input_large__clear"></div>
+</div>
+```
+
+Следовательно, метод `setValue` (а так же `getValue`) должны работать не с `this.getDomNode()`, а с DOM-элементом 
+поля формы. А в терминах `BEViS` поле формы предствлено элементом блока, и имя этому элементу — 'control'.
+ 
+Перепишем методы:
+```javascript
+getValue: function() {
+    var control = this._findElement('control');
+    return control.val();
+},
+
+
+setValue: function(value) {
+    var control = this._findElement('control');
+    control.val(value);
+}
+```
+
+Всё, теперь работает, текст удаляется, вместо него возникает плейсхолдер.
+
+Сделаем код опрятнее, удалим диблирование, допишем комментарии. У меня это получилось так:
+```javascript
+modules.define(
+    'input',
+    ['inherit', 'block'],
+    function (provide, inherit, YBlock) {
+        var Input = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                // Находим все элементы блока
+                this._clear = this._findElement('clear');
+                this._control = this._findElement('control');
+
+                // Обрабатываем клик по крестику
+                this._bindTo(this._clear, 'click', this._onClearClicked);
+            },
+
+            /**
+             * Очищает поле ввода
+             */
+            _onClearClicked: function () {
+                this.setValue('');
+            },
+
+            /**
+             * Получает значение из текстового поля
+             *
+             * @returns {String | undefined}
+             */
+            getValue: function() {
+                return this._control.val();
+            },
+
+            /**
+             * Устанавливает значение к текстовое поле
+             * @param {String} value Переданное значение
+             */
+            setValue: function(value) {
+                this._control.val(value);
+            }
+        }, {
+            getBlockName: function () {
+                return 'input';
+            }
+        });
+
+        provide(Input);
+});
+```
+
+
 
 ----
 
