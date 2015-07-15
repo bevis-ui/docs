@@ -894,6 +894,44 @@ this._greetingInput = new Input();
 
 Красиво, коротко, понятно: `new Input()` и готово.
 
+Если нужно наполнить поле значением, делаем это через публичные методы класса `Input`:
+
+```javascript
+// Создаём инпут
+this._greetingInput = new Input();
+this._greetingInput.setValue('Привет, Бивис!');
+```
+
+Можно тут же установить фокус или снять фокус. Деактивировать поле или активировать, в-общем, делать всё то, для чего
+ написаны публичные методы класса `Input`:
+```javascript
+this._greetingInput.focus();
+this._greetingInput.blur();
+this._greetingInput.disable();
+this._greetingInput.enable();
+```
+
+И наконец, мы можем подписаться на произвольные события, генерируемые классом `Input`.
+
+```javascript
+// Создаём инпут
+this._greetingInput = new Input();
+this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
+```
+
+Подписка на кастомные события происходит с помощью метода `on()`, который вызывается от объекта, на котром мы хотим 
+услышать событие. Этот метод есть у каждого визуального блока, потому что он наследован от класса `EventEmitter`.
+ 
+Этот метод тоже читается, словно на русском языке: 
+```javascript
+this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
+// Этот инпут-контрол слушает событие `input-submitted`, и когда оно случится, вызовется метод `_onInputSubmitted`
+```
+
+
+
+----
+
 Да, это ещё не всё. Ведь можно в конструктор инпута передавать параметры, как мы это делали в bt-шаблоне.
 
 ```javascript
