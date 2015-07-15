@@ -482,9 +482,11 @@ class="input_large">` и тогда же мы создавали `js`-загот
 ```
 
 Следовательно, метод `setValue` (а так же `getValue`) должны работать не с `this.getDomNode()`, а с `DOM`-элементом 
-поля формы. А в терминах `BEViS` поле формы представлено элементом блока, и имя этому элементу — `control`.
+поля формы. Текстовое поле формы у нас представлено тегом `<input class="input_large__control">` (см. `HTML` выше), то 
+есть в терминах `BEViS` текстовое поле формы — это элемент `control` у блока `input-large` (см. атрибут 
+`class="input_large__control"`).
  
-Перепишем методы:
+Перепишем методы, чтобы значение извлекалось/устанавливалось в/из текстового поля формы:
 ```javascript
 getValue: function() {
     var control = this._findElement('control');
@@ -536,6 +538,7 @@ modules.define(
 
             /**
              * Устанавливает значение к текстовое поле
+             * 
              * @param {String} value Переданное значение
              */
             setValue: function(value) {
