@@ -1431,13 +1431,13 @@ this._passwordInput = new Input({
 * он должен возвращать точно такую же строку, что записана в имени модуля  
 ```javascript
 modules.define(
-    'input', // Здесь!
+    'input', // <------------------------------- Здесь!
     ['inherit', 'block'],
     function (provide, inherit, YBlock) {
         var Input = inherit(YBlock, {
         }, {
             getBlockName: function () {
-                return 'input'; // Здесь!
+                return 'input'; //  <----------- Здесь!
             }
         });
 
