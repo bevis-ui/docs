@@ -1435,7 +1435,6 @@ modules.define(
     ['inherit', 'block'],
     function (provide, inherit, YBlock) {
         var Input = inherit(YBlock, {
-            // ...
         }, {
             getBlockName: function () {
                 return 'input'; // Здесь!
