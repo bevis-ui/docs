@@ -13,7 +13,7 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.css'}
             ],
             scripts: [
-                {url: options.assetsPath + '.js'}
+                {url: options.assetsPath + '.' + params.lang + '.js'}
             ],
             body: [
                 {
@@ -94,7 +94,7 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.css'}
             ],
             scripts: [
-                {url: options.assetsPath + '.js'}
+                {url: options.assetsPath + '.' + params.lang + '.js'}
             ],
             body: [
                 {
@@ -943,7 +943,7 @@ module.exports = function (bt) {
 ```
 
 А ещё можно задавать какое-либо `view` как дефолтное. Чтобы даже если вы не задекларировали никакого `view`, оно
-сгенерировалось бы само. Это нужно, когда на сайте большинство инпутов имеет размер `normal`. Тогда мы везде
+сгенерировалось бы само. Это нужно, когда на сайте большинство инпутов имеет, к примеру, размер `large`. Тогда мы везде
 декларируем блок без `view`:
 
 ```javascript
@@ -953,8 +953,8 @@ module.exports = function (bt) {
 }
 ```
 
-А чтобы построился такой html `<div class="input_normal"></div>`, мы в файле с шаблонами объявляем дефолтный `view` с
-помощью метода `bt.setDefaultView('input', 'normal');`
+А чтобы построился такой html `<div class="input_large"></div>`, мы в файле с шаблонами объявляем дефолтный `view` с
+помощью метода `bt.setDefaultView('input', 'large');`
 
 Было:
 ```javascript
@@ -967,7 +967,7 @@ module.exports = function (bt) {
 Стало
 ```javascript
 module.exports = function (bt) {
-    bt.setDefaultView('input', 'normal');
+    bt.setDefaultView('input', 'large');
 
     bt.match('input*', function (ctx) {
 // ...

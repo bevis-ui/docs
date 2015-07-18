@@ -19,7 +19,7 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.css'}
             ],
             scripts: [
-                {url: options.assetsPath + '.js'}
+                {url: options.assetsPath + '.' + params.lang + '.js'}
             ],
             body: [
                 {
@@ -804,7 +804,7 @@ module.exports = function (pages) {
                 {url: options.assetsPath + '.css'}
             ],
             scripts: [
-                {url: options.assetsPath + '.js'}
+                {url: options.assetsPath + '.' + params.lang + '.js'}
             ],
             body: [
                 {
