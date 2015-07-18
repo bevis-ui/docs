@@ -905,13 +905,11 @@ this._greetingInput = new Input();
 this._greetingInput.setValue('Привет, Бивис!');
 ```
 
-Можно тут же установить фокус или снять фокус. Деактивировать поле или активировать, в-общем, делать всё то, для чего
+Можно тут же установить фокус или деактивировать поле, в-общем, делать всё то, для чего
  написаны публичные методы класса `Input`:
 ```javascript
 this._greetingInput.focus();
-this._greetingInput.blur();
 this._greetingInput.disable();
-this._greetingInput.enable();
 ```
 
 И наконец, мы можем подписаться на произвольные события, генерируемые классом `Input`.
@@ -925,26 +923,313 @@ this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
 Подписка на кастомные события происходит с помощью метода `on()`, который вызывается от объекта, на котром мы хотим 
 услышать событие. Этот метод есть у каждого визуального блока, потому что он наследован от класса `EventEmitter`.
  
-Этот метод тоже читается, словно на русском языке: 
+Мметод `on` тоже читается, словно на человеческом языке: 
 ```javascript
 this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
 // Этот инпут-контрол слушает событие `input-submitted`, и когда оно случится, вызовется метод `_onInputSubmitted`
 ```
 
-
-
-----
-
-Да, это ещё не всё. Ведь можно в конструктор инпута передавать параметры, как мы это делали в bt-шаблоне.
+Что будет происходить в обработчике - не знаю. У меня обработчик пока только вываливает в консоль сообщение о том, что 
+обработчик вызыван. У вас там наверняка будет валидация данных во всех полях формы и отправка данных куда-то в бекенд.
 
 ```javascript
+modules.define(
+    'form',
+    ['inherit', 'block', 'input'],
+    function (provide, inherit, YBlock, Input) {
+        var form = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                // Создаём инпут
+                this._greetingInput = new Input();
+                this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
+
+                // Рендерим форму
+                this._render();
+            },
+
+            _onInputSubmitted: function () {
+                console.log('Форма поймала событие от Input');
+            },
+
+            /**
+             * Рендерит все контролы в форме
+             */
+            _render: function () {
+                var form = this.getDomNode();
+                var greeting = this._greetingInput.getDomNode();
+
+                greeting.appendTo(form);
+            }
+        }, {
+            getBlockName: function () {
+                return 'form';
+            }
+        });
+
+        provide(form);
+});
+```
+
+Мне не нравится, что модуль с формой занимается `append`-ом инпута внутрь себя. Мне кажется, форма этим заниматься не
+ должна. Инпут сам должен рендерить себя — пусть рендеринг инпута происходит в модуле `Input`, а не в модуле `Form`. 
+  Не могу аргументированно доказать, почему именно такой подход я считаю правильным, но я ему следую ему. "Я художник — 
+  я так вижу" (с) 
+  
+Есть по-сильнее аргумент. Если Инпут будет уметь сам себя рендерить, тогда он может оказаться в любом другом блоке, а  
+не только в _этой_ форме — любой блок сможет создать инстанс Инпута и не заботиться о том, что нужно ещё 
+написать некий метод, чтобы встроить этот инпут в себя. Хочется, чтобы инпут умел принимать параметр со ссылкой на 
+"родительскую" DOM-ноду, куда инпуту нужно встроиться.  
+
+Для этого нам пригодится возможность в конструктор класса передавать параметры.
+
+```javascript
+modules.define(
+    'form',
+    ['inherit', 'block', 'input'],
+    function (provide, inherit, YBlock, Input) {
+        var form = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                var formDomNode = this.getDomNode();
+
+                // Создаём инпут
+                this._greetingInput = new Input({
+                    parentNode: formDomNode
+                });
+
+                this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
+            },
+
+            _onInputSubmitted: function () {
+                console.log('Форма поймала событие от Input');
+            }
+        }, {
+            getBlockName: function () {
+                return 'form';
+            }
+        });
+
+        provide(form);
+});
+```
+
+1. Мы удалили метод `render()`. Он не нужен.
+
+2. В конструкторе формы мы создали локальную переменную `formDomNode`, в которую получили `DOM`-представление формы.
+
+3. В создаваемый экземпляр класса `Input` мы передали произвольный параметр `parentNode`, в значении которого 
+оказалось `DOM`-представление формы. Имя `parentNode`, как и `formDomNode` - абсолютно произвольные. 
+
+Было:
+```javascript
+// Создаём инпут
+this._greetingInput = new Input();
+```
+
+Стало:
+```javascript
+// Создаём инпут
+this._greetingInput = new Input({
+    parentNode: formDomNode
+});
+```
+
+Код модуля `Form` стал меньше и понятнее. В нём не осталось никакой лишней логики, есть только нужное для формы: 
+* создаёт экземпляр инпута
+* если инпут выкинет событие `input-submitted` — форма отреагирует каким-то образом. 
+
+А код модуля `Input` нужно дописать:
+* принимать в конструкторе параметр `parentNode`, в которм хранится `DOM`-представлении формы
+* отрендерить `DOM`-представление инпута внутри `DOM`-представлении формы 
+
+Смотрите, что я изменил в модуле `input.js`:
+
+Было:
+```javascript
+__constructor: function (params) {
+    this.__base.apply(this, arguments);
+
+    // Находим все элементы блока
+    this._clear = this._findElement('clear');
+    this._control = this._findElement('control');
+
+    // Обрабатываем клик по крестику
+    this._bindTo(this._clear, 'click', this._onClearClicked);
+
+    // Слушаем события, которые выбросил <input>
+    this._bindTo(this._control, 'keypress', this._onKeyPressed);
+    this._bindTo(this._control, 'focus', this.focus);
+    this._bindTo(this._control, 'blur', this.blur);
+},
+```
+
+Стало:
+```javascript
+__constructor: function (params) {
+    this.__base.apply(this, arguments);
+
+    // Получаем параметр с DOM-нодой родителя.
+    this._parentNode = params.parentNode;
+
+    // Отредери себя!
+    this._render();
+    
+    // Находим все элементы блока
+    this._clear = this._findElement('clear');
+    this._control = this._findElement('control');
+
+    // Обрабатываем клик по крестику
+    this._bindTo(this._clear, 'click', this._onClearClicked);
+
+    // Слушаем события, которые выбросил <input>
+    this._bindTo(this._control, 'keypress', this._onKeyPressed);
+    this._bindTo(this._control, 'focus', this.focus);
+    this._bindTo(this._control, 'blur', this.blur);
+},
+
+/**
+ * Рендерит инпут внутри родительской DOM-ноды this._parentNode
+ */
+_render: function () {
+    this.getDomNode().appendTo(this._parentNode);
+},
+```
+
+Так можно передавать любые параметры из одного блока в другой. Так блоки могут обмениваться данными. 
+
+Но это ещё не всё. Ведь можно в конструктор инпута передавать параметры, как мы это делали в bt-шаблоне.
+
+Помните, мы в `test-page.page.js` когда-то декларировали статический `bt-json`, а потом от него отказались?
+```javascript
+    body: [
+        {
+            block: 'input',
+            view: 'large',
+            value: 'Привет, Бивис',
+            name: 'loginField',
+            placeholder: 'Инпут на сайте'
+        }
+    ]
+```
+
+Точно такой же статический `btjson` можно передавать в качестве параметров при создании экземпляра нашего Инпута.
+
+Возвращаемся в модуль `form.js`
+
+Было:
+```javascript
+// Создаём инпут
+this._greetingInput = new Input({
+    parentNode: formDomNode
+});
+```
+
+Стало:
+```javascript
+// Создаём инпут
 this._greetingInput = new Input({
     value: 'Привет, Бивис',
     name: 'loginField',
-    placeholder: 'Инпут на сайте'
+    placeholder: 'Инпут на сайте',
+
+    parentNode: formDomNode
 });
 ```
+
+И обновите страницу в браузере.
  
+Внезапно, в текстовом поле оказалось значение "Привет, Бивис". А если фаербагом посмотреть в `HTML`, увидим в атрибуте 
+`name` значение "loginField", а в `placeholder` значение "Инпут на сайте". 
+
+И при этом инпут отрендерился внутри формы (сам!), на нёго повесились все обработчики событий.
+И при этом форма слушает его кастомные события.
+
+Я очень люблю `BEViS` за это. Оказывается, `bt`-шаблоны работают и на серверной стороне и в браузере.
+
+То есть, если надо создать блок на серверной стороне, мы в теле страницы `test-page.page.js` декларируем блок и 
+описываем нужные опции. И знаем, что сервер отправит браузеру полностью готовый код блока в виде набора `HTML`-тегов со 
+всеми нужными данными для отображения.
+
+Вот фрагмент страницы `test-page.page.js` со статической декларацией блока `input`.
+```javascript
+body: [
+    {
+        block: 'input',
+        view: 'large',
+        value: 'Привет, Бивис',
+        name: 'loginField',
+        placeholder: 'Инпут на сайте'
+    }
+]
+```
+
+Если надо создать блок, но не статический (когда все данные для блока известны) на сервере, а динамический (когда 
+часть данных может быть известна только во время работы приложения в браузере) из клиентского `javascript`, то нам 
+нужно выполнить два шага:
+
+1. Создать файл-болванку для клиенского `javascript`-модуля (можно сделать с помощью команды `make block`)
+```javascript
+modules.define(
+    'input',
+    [
+        'inherit',
+        'block'
+    ],
+    function (
+        provide,
+        inherit,
+        YBlock
+    ) {
+        var Input = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+            }
+        }, {
+            getBlockName: function () {
+                return 'input';
+            }
+        });
+
+        provide(Input);
+    }
+);
+```
+Этой болванки абсолютно достаточно, чтобы выполнить второй шаг.
+
+2. В каком-том другом модуле (например `form.js`) вызвать конструктор класса `Input` с `bt`-опциями, которые можно 
+заполнить динамическими данными:
+
+```javascript
+// Создаём инпут
+var currentValue = 'Привет, Бивис'; // Здесь, например, вызов некоей функции, которая вернёт некое значение для поля.
+var currentName = 'loginField'; 
+
+this._greetingInput = new Input({
+    value: currentValue,
+    name: currentName,
+    placeholder: 'Инпут на сайте',
+});
+```
+
+В результате работы конструктора `new Input` в браузере будет создан `HTML` инпута прямо налету. И получить его можно
+ с помощью метода `getDomNode()`: `this._greetingInput.getDomNode()`.
+  
+А дальше этот HTML нужно задоавить в DOM-дерево страницы каким-то образом - на ваше усмотрение. наши предпочтения 
+  на этот счёт я описал выше.
+
+Это мы говрили про первый способ генерации блока на стороне браузера.
+
+А второй способ — не полагаться на `bt`-шаблоны, а написать в `input.js` специальные методы-сеттеры (от слова 'to 
+set' - устанавливать), с помощью которых можно установать необходимые значения. Мы с такого метода начинали с вами: 
+это метод `setValue()`.
+
+
+Мы в работе польуземся всеми тремя способами одновременно. То, что можно сгенерить статически - генерим на сервере. 
+Если какие-то данные для генерации блока мы можем получить только в браузере, мы генерим блок динамически.
+
 ----
 
 
@@ -955,18 +1240,9 @@ this._greetingInput = new Input({
 
 * Методы для размещения блока в нужном фрагменте `DOM`-дерева.
 * Базовый конструктор и деструктор.
-* Разбор `js`-параметров из `DOM`-элементов.
-* Интерфейс конструирования блоков с помощью BT-шаблонов.
 * Инициализация/деинициализация блоков на переданном фрагменте `DOM`-дерева.
 * Интерфейс для отложенной (`live`) инициализации.
 * Статические метод класса
-
-----
-
-как от него отнаследоваться,
-как инициализировтаься,
-как получить доступ к блоку,
-как сделать лив-инициализацию
 
 ----
 
