@@ -40,7 +40,7 @@ _На вопросы, отмеченные звёздочкой, мы либо �
 #### О технологиях
 1. [bt](https://github.com/enb-make/bt)
 2. [ENB](https://github.com/enb-make/enb)
-3. [Ymaps Modules](https://github.com/ymaps/modules/blob/master/what-is-this.md)
+3. [Ymaps Modules](how-to-make/modules.md)
 4. [Stylus](http://learnboost.github.io/stylus/)
 
 #### Отвечаем на частые вопросы
