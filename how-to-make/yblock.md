@@ -1696,14 +1696,126 @@ modules.define(
         provide(Input);
 });
 ```
-Я создал статический метод `_liveInit`, в него перенёс слушание событий на элементах. 
+Я создал статический метод `_liveInit`, в него перенёс слушание событий на элементах. Работает. Надо? Пользуйтесь.
+
+##Наследование своих же блоков
+
+Про механизм наследования, кажется, нужно ещё раз рассказать. Как вы знаете, мы наследуем классы через функцию 
+`inherit`. До сих пор мы создавали блоки (`form`, `input`) и наследовали их от класса `YBlock`. Точно таким же 
+образом можно наследоваться от наших же собственных блоков - от того же `form` и `input`.
+
+Создадим файл `blocks/super-input/super-input.js`. Это будет новый блок, некий "Супер-Инпут", который наследует все 
+возможности "Инпута", и добавит что-то своё:
+```javascript
+modules.define(
+    'super-input', // <----- Имя модуля
+    [
+        'inherit', 
+        'input' // <-------- Зависимость от модуля `input`
+    ],
+    function (
+        provide, 
+        inherit, 
+        Input  // <--------- Получили модуль `input` в переменную `Input`
+    ) {
+        var SuperInput = inherit(Input, { // <--------------------- Отнаследовали `SuperInput` от `Input`
+            __constructor: function (params) {
+                this.__base.apply(this, arguments);
+            },
+
+            // Переопределили метод класса Input
+            focus: function () {
+                console.log('Метод focus переопределён!'); // <-- Добавили какую-то дополнительную функциональность
+
+                this.__base.call(); // <---------- Вызвали базовый метод `focus` из родитеского класса `Input`
+            },
+
+            // Доопределили овый метод
+            animate: function () {
+                console.log('Метод animate доопределён!'); 
+            }
+        });
+
+        provide(SuperInput);
+});
+```
+
+Укажем этот модуль в зависимостях страницы `pages/test-page/test-page.deps.yaml`:
+Было:
+```
+- page
+- block: block
+  elem: auto-init
+- input
+- form
+```
+
+Стало:
+```
+- page
+- block: block
+  elem: auto-init
+- input
+- super-input
+- form
+```
+
+И теперь создадим этот "Супер-Инпут" внутри формы:
+```javascript
+modules.define(
+    'form',
+    ['inherit', 'block', 'input', 'super-input'],
+    function (provide, inherit, YBlock, Input, SuperInput) {
+        var form = inherit(YBlock, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                var formDomNode = this.getDomNode();
+
+                // Создаём инпут
+                this._greetingInput = new Input({
+                    value: 'Привет, Бивис',
+                    name: 'loginField',
+                    placeholder: 'Инпут на сайте',
+
+                    parentNode: formDomNode
+                });
+                this._greetingInput.on('input-submitted', this._onInputSubmitted, this);
+
+                // Создаём инпут для пароля
+                this._passwordInput = new SuperInput({ // <-------------------------- Создаём Супер-Инпут
+                    name: 'passwordField',
+                    type: 'password',
+                    placeholder: 'Введите пароль',
+
+                    parentNode: formDomNode
+                });
+                this._passwordInput.on('input-submitted', this._onInputSubmitted, this);
+            },
+
+            _onInputSubmitted: function () {
+                console.log('Форма поймала событие от Input');
+            }
+        }, {
+            getBlockName: function () {
+                return 'form';
+            }
+        });
+
+        provide(form);
+});
+```
+
+Обновляем страницу в браузере, видим два инпута рядом друг с другом — один для логина, второй для пароля. Если 
+поставить курсор в поле для пароля, в консоли появится текст из переопределенного метода `focus`. При этом шаблоны и 
+стили применились от блока `Input` — мы не писали для "Супер-Инпута" ни строчки шаблонов и стилей.
+
+
 
 
 
 ----
 
-* Инициализация/деинициализация блоков на переданном фрагменте `DOM`-дерева.
-* Наследование от инпута
 * Разбить страницу на главы, сделать удобное оглавление.
 
 ----
