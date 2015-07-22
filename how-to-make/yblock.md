@@ -763,7 +763,7 @@ _onKeyPressed: function (e) {
 После этого генерим кастомное событие `input-submitted` (я его сам придумал) с помощью ещё одного метода, который  
 унаследован от `YBlock`, а тот в свою очередь унаследовал его от класса `EventEmitter`. Документацию к этому классу 
 и к его методам для работы с событиями 
-[можно прочитать здесь](https://github .com/bevis-ui/bevis-stub/blob/master/core/event-emitter/event-emitter.js). 
+[можно прочитать здесь](https://github.com/bevis-ui/bevis-stub/blob/master/core/event-emitter/event-emitter.js). 
 
 ## Подписка на произвольные события 
 
