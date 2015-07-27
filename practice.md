@@ -7,20 +7,20 @@
 
 _На вопросы, отмеченные звёздочкой, мы либо ещё не ответили, либо ответили не полностью._
 
-1. [Как создать новую страницу?](how-to-make/new-page.md)
+1. [Создаём новую страницу проекта](practice/new-page.md)
 
-2. [Как добавить в страницу новый блок?](how-to-make/new-block.md)
+2. [Добавляем на страницу новый блок](practice/new-block.md)
 
-3. [Как описать зависимости между блоками?](how-to-make/dependencies.md)
+3. [Описываем зависимости между блоками](practice/dependencies.md)
 
-4. [Как написать стили для блока?](how-to-make/css.md)
+4. [Пишем стили для блока](practice/css.md)
 
-5. [Как написать js-поведение для блока?](how-to-make/yblock.md)
+5. [Пишем `js`-поведение для блока](practice/yblock.md)
 
-6. [Как настроить локализацию?](how-to-make/i18n.md)
+6. [Настраиваем локализацию в проекте](practice/i18n.md)
 
-7. [Как использовать MVC-паттерн в BEViS?](how-to-make/mvc-app.md) [*]
+7. [Используем `MVC`-паттерн в `BEViS`-проекте](practice/mvc-app.md) [*]
 
-8. [Как написать тесты?](how-to-make/tests.md) [*]
+8. [Пишем тесты](practice/tests.md) [*]
 
-9. [Как взаимодействовать с бекендом?](how-to-make/backend-requests.md) [*]
+9. [Взаимодействуем с бекендом](practice/backend-requests.md) [*]
