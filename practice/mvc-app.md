@@ -131,14 +131,14 @@ _Я опустил служебные папки, оставил только т
 сделать две схожие по назначению директории: `server` и `client`. В первой будет всё, что относится к `Node.js` (к 
 серверной части приложения), во второй - к клиентской. Например, `blocks`, `core`, `pages` — это же всё имеет 
 отношение к фронтенду — блоки, страницы. Пусть живут в `client`:
-````
+```
 /client
     /blocks
     /core
     /pages
 /configs
 /server
-````
+```
 
 Вы можете переделывать файловую структуру со мной вместе. А можете посмотреть как это реализовано в 
 [отдельной ветке](https://github.com/bevis-ui/bevis-stub/tree/mvc-application), где я переформатировал `bevis-stub` 
@@ -237,15 +237,109 @@ module.exports = function (config) {
 }
 ```
 
+Перезапускаем проект командой `make`. Если видим что-то подобное, значит всё стартовало успешно:
+```
+~/bevis-stub/node_modules/.bin/enb make
+17:40:45.968 - build started
+17:40:47.267 - [rebuild] [build/index/index.sources] sources
+17:40:47.269 - [rebuild] [build/test/test.sources] sources
+17:40:47.275 - [isValid] [build/index/index.dest-deps.js] deps
+17:40:47.276 - [isValid] [build/test/test.dest-deps.js] deps
+17:40:47.278 - [rebuild] [build/index/index.files] files
+17:40:47.278 - [rebuild] [build/index/index.dirs] files
+17:40:47.278 - [rebuild] [build/test/test.files] files
+17:40:47.279 - [rebuild] [build/test/test.dirs] files
+17:40:47.280 - [isValid] [build/index/index.bt.js] bt-server
+17:40:47.281 - [isValid] [build/index/index.page.js] page-js
+17:40:47.281 - [isValid] [build/index/index.css] css-stylus-with-autoprefixer
+17:40:47.282 - [isValid] [build/index/index.lang.ru.js] y-i18n-lang-js
+17:40:47.283 - [isValid] [build/index/index.lang.en.js] y-i18n-lang-js
+17:40:47.284 - [isValid] [build/test/test.bt.js] bt-server
+17:40:47.284 - [isValid] [build/test/test.page.js] page-js
+17:40:47.285 - [isValid] [build/test/test.css] css-stylus-with-autoprefixer
+17:40:47.285 - [isValid] [build/test/test.lang.ru.js] y-i18n-lang-js
+17:40:47.285 - [isValid] [build/test/test.lang.en.js] y-i18n-lang-js
+17:40:47.286 - [isValid] [build/index/index.bt.client.js] bt-client-module
+17:40:47.286 - [isValid] [build/test/test.bt.client.js] bt-client-module
+17:40:47.293 - [isValid] [build/index/index.source.ru.js] js
+17:40:47.294 - [isValid] [build/index/index.source.en.js] js
+17:40:47.295 - [isValid] [build/test/test.source.ru.js] js
+17:40:47.296 - [isValid] [build/test/test.source.en.js] js
+17:40:47.332 - [rebuild] [build/index/_index.css] file-copy
+17:40:47.332 - [rebuild] [build/index/_index.lang.ru.js] file-copy
+17:40:47.332 - [rebuild] [build/index/_index.lang.en.js] file-copy
+17:40:47.332 - [rebuild] [build/test/_test.css] file-copy
+17:40:47.332 - [rebuild] [build/test/_test.lang.ru.js] file-copy
+17:40:47.333 - [rebuild] [build/test/_test.lang.en.js] file-copy
+17:40:47.333 - [isValid] [build/index/index.modernizr.en.js] modernizr-js
+17:40:47.333 - [isValid] [build/index/index.modernizr.ru.js] modernizr-js
+17:40:47.334 - [isValid] [build/test/test.modernizr.ru.js] modernizr-js
+17:40:47.334 - [isValid] [build/test/test.modernizr.en.js] modernizr-js
+17:40:47.372 - [isValid] [build/index/index.en.js] autopolyfiller
+17:40:47.373 - [isValid] [build/index/index.ru.js] autopolyfiller
+17:40:47.375 - [isValid] [build/test/test.ru.js] autopolyfiller
+17:40:47.375 - [isValid] [build/test/test.en.js] autopolyfiller
+17:40:47.403 - [rebuild] [build/index/_index.ru.js] file-copy
+17:40:47.403 - [rebuild] [build/index/_index.en.js] file-copy
+17:40:47.404 - [rebuild] [build/test/_test.en.js] file-copy
+17:40:47.404 - [rebuild] [build/test/_test.ru.js] file-copy
+17:40:47.405 - build finished - 1437ms
 
+DEBUG: Running node-supervisor with
+DEBUG:   program 'server/boot.js'
+DEBUG:   --watch 'server,configs'
+DEBUG:   --ignore 'undefined'
+DEBUG:   --extensions 'node|js'
+DEBUG:   --exec 'node'
+
+DEBUG: Starting child process with 'node server/boot.js'
+DEBUG: Watching directory '~/bevis-stub/server' for changes.
+DEBUG: Watching directory '~/bevis-stub/configs' for changes.
+17:40:48 - info: worker 15078 started
+17:40:48 - info: worker 15079 started
+17:40:48 - info: app started on 8080
+17:40:48 - info: app started on 8080
+```
+
+Проверяем в браузере: 
+
+`localhost:8080` - работает.
+`localhost:8080/test` - работает.
+
+Отлично, не сломалось. Поехали дальше.
  
+## `View`
+
+Выше мы уже говорили, что блоки, которые лежат в папке `blocks` выполняют роль представления. Поэтому 
+переименуем директорию и дадим ей имя `views`. 
+```
+/client
+    /core
+    /pages
+    /views   <----- теперь здесь хранятся все представления проекта
+/configs
+/server
+```
+
+Не забываем заменить путь к ней в `package.json`
+```javascript
+"enb": {
+    "sources": [
+        "client/views", // <------------ Было client/blocks
+        "client/core",
+        "client/pages"
+    ]
+}
+```
+Всё, вьюхи готовы. Мы их давно написали. Они всё умеют — умеют принимать данные неведомо откуда. Умеют отображать 
+их в виде `HTML`-тегов. Умеют слушать на себе клики и всякие другие действия пользователя. Самые настоящие вью. А 
+больше тут делать и нечего.
+
+Давайте займёмся главной частью приложения — контроллером.
+
+## `Controller`
 
 
-
-  
-  
- 
- 
 
 
 
