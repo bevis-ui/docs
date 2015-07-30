@@ -1719,34 +1719,24 @@ _onKeyPressed: function (e) {
 
 Где он вызывается? Откройте файл `core/block/block__auto-init.js`:
 ```javascript
-modules.require(['jquery', 'block'], function ($, Block) {
-    $(function () {
-        Block.initDomTree(window.document).done();
-    });
+modules.require(['block'], function (Block) {
+    Block.initDomTree(window.document).done();
 });
 ```
 Мы видим `ymaps-модуль`, но какой-то странный: вместо `modules.define` использован `modules.require`.
-[Читаем документацию](https://github.com/ymaps/modules/blob/master/README.ru.md#Объявление-модуля). Значит это не 
-объявление модуля, а использование. Другими словами, код этого модуля выполнится сразу, как только 
-`Javascript`-интерпретатор его прочитает. Именно этот файл - точка входа в работу нашего javascript-bevis-приложения.
- И работает это так:
+[Читаем документацию](https://github.com/ymaps/modules/blob/master/README.ru.md#Объявление-модуля). О, как! 
+Оказывается, это не объявление модуля, а сразу его использование! Другими словами, код этого модуля выполнится 
+сразу, как только `Javascript`-интерпретатор его прочитает. Получается, именно этот файл - точка входа в работу нашего 
+`javascript-bevis`-приложения. И работает это примерно так:
 
 "Слушай меня, `Javascript`-интерпретатор", — говорит модульная система. — "Как только я (модульная система) загружу 
-модули `jquery` и `block`, сразу выполни следующий код":
+модуль `block`, сразу выполни следующий код":
 
 ```javascript
-    $(function () {
-        Block.initDomTree(window.document).done();
-    });
+    Block.initDomTree(window.document).done();
 ```
 
-То есть, вызови `jQuery`-функцию, которая выполнит строку:
- 
-```javascript 
-        Block.initDomTree(window.document).done();
-``` 
-
-А в этой строке от модуля `YBlock` вызывается статический метод `initDomTree`, который иницилизирует все 
+А в этой строке от модуля `Block` вызывается статический метод `initDomTree`, который иницилизирует все 
 бивис-компоненты внутри ноды `window.document`. 
 
 Слово "инициализирует" - означает, что:
