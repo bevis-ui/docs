@@ -523,7 +523,7 @@ if (page === 'страница1') {
 modules.require(['block', 'page-controller'], function (Block, PageController) {
     Block.initDomTree(document.body).done(function () {
         var pageController = new PageController();
-        pageController.init();
+        pageController.start();
     });
 });
 ```
@@ -545,12 +545,14 @@ modules.require(['block', 'page-controller'], function (Block, PageController) {
 В итоге когда приложение стартанёт, контроллер приложения выполнет эти две строки:
 ```javascript
         var pageController = new PageController();
-        pageController.init();
+        pageController.start();
 ```
+В первой строке мы создаём экземпляр контроллера страницы.
 
-А в этих строках создаётся экземпляр контроллера страницы. А потом вызывается какой-то его метод. Я предположил, что 
-у страничного контроллера логично иметь метод `init`, с которого и должна начинаться его работа, поэтому написал 
-вызов метода `init`.
+Во второй строке вызываем какой-то его метод. 
+
+Я предположил, что у страничного контроллера будет некий метод `start`, с которого и должна начинаться работа 
+контрллера, поэтому написал вызов метода `start`.
  
 
  
