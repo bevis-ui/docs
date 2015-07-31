@@ -669,9 +669,62 @@ echo '' > client/pages/test-page/controllers/page-controller.js
 }
 ```
 
-Теперь напишем сам контроллер. Волнующий момент, потому что мы будем писать самую главную часть приложения - мозг 
-нашей страницы. А точнее, напишем сразу два контроллера, чтобы увидеть, что они друг с другом не конфликтуют - каждый
- из них будет работать только в своей странице.
+И ещё один важный шаг. 
+
+Мы с вами сообщили сборщику, _где_ искать ресурсы для страниц. Но ещё не сказали, что он _вообще 
+должен искать_ их. :)
+
+Откройте файл `.enb/make.js` - главный конфиг сборщика, и добвьте одну строку:
+
+```
+var fs = require('fs');
+var path = require('path');
+
+module.exports = function (config) {
+
+    config.setLanguages(['ru', 'en']);
+
+    config.includeConfig('enb-bevis-helper');
+
+    var bevisHelper = config.module('enb-bevis-helper')
+        .browserSupport([
+            'IE >= 9',
+            'Safari >= 5',
+            'Chrome >= 33',
+            'Opera >= 12.16',
+            'Firefox >= 28'
+        ])
+        .useAutopolyfiller();
+
+    fs.readdirSync('client/pages').forEach(function(pageName) {
+        var nodeName = pageName.replace(/(.*?)\-page/, path.join('build', '$1'));
+
+        config.node(nodeName, function (nodeConfig) {
+
+            bevisHelper
+                .sourceDeps(pageName)
+                .sources({profile: pageName}) // <------------------ Эту строку!
+                .forServerPage()
+                .configureNode(nodeConfig);
+
+            nodeConfig.addTech(require('./techs/page'));
+            nodeConfig.addTarget('?.page.js');
+        });
+
+    });
+
+};
+```
+
+Именно с помощью этой строки мы говорим сборщику, что _для каждой страницы ты обязан искать ресурсы ещё и в профиле с 
+именем страницы_. В это можно не сильно вдумываться. У нас есть [отдельное занятие про настройку сборки 
+проекта](enb.md), где вы всё-всё поймете, там несложно. А пока думать об этом не надо, достаточно добавить эту строку.
+
+Теперь, наконец, напишем сам контроллер. 
+
+Волнующий момент, потому что мы будем писать самую главную часть приложения - мозг нашей страницы. А точнее, напишем
+ сразу два контроллера, чтобы увидеть, что они друг с другом не конфликтуют - каждый из них будет работать только в 
+ своей странице.
 
 Пишем контроллер для `index`-страницы: `client/pages/index-page/controllers/page-controller.js`
 ```javascript
@@ -787,35 +840,4 @@ index: PageController started
 ----
 
 в разработке
-
-Что этот файл делает - инициализирует все блоки на странице. А какие блоки есть на странице, если страница описана 
-таким `btjson`?
-```javascript
-module.exports = function (pages) {
-    pages.declare('test-page', function (params) {
-        var options = params.options;
-        return {
-            block: 'page',
-            title: 'test page',
-            styles: [
-                {url: options.assetsPath + '.css'}
-            ],
-            scripts: [
-                {url: options.assetsPath + '.' + params.lang + '.js'}
-            ],
-            body: [
-                {
-                    block: 'form',
-                    titleText: pages.i18n('form', 'title-text')
-                }
-            ]
-        };
-    });
-};
-```
-
-Он инициализирует только блок `page` и `form`.
-
-
-
 
