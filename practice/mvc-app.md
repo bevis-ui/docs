@@ -2198,8 +2198,7 @@ modules.define(
             var isAuthorized = this._authModel.isAuthorized();
 
             if (isAuthorized) {
-                // Получаем авторизационные данные
-                var authData = this._authModel.get();
+                var authData = this._authModel.get();          // <------- Получаем авторизационные данные
 
                 var sidebarView = new SidebarView({
                     title: 'Привет, ' + authData.login + '!',  // <------- Здесь показываем логин пользователя
