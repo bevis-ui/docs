@@ -2189,9 +2189,6 @@ modules.define(
             this._authModel.on('saved', this.start, this);
         },
 
-        /**
-         * Отображает контент или форму авторизации, елси пользователь незалогинен
-         */
         start: function () {
             $('body').empty();
 
