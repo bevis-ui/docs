@@ -2072,13 +2072,195 @@ modules.define(
 
 _Созданную куку я проверяю с помощью браузерного расширения [Edit This Cookie](http://www.editthiscookie.com). Оно 
 работает под `Chrome`, новую `Opera`, `Yandex.Browser` и все другие браузеры, основанные на движке `Blink`. Для 
-`Firefox` тоже есть подобные расширения, не пользуюсь этим браузером, — не подскажу вам._
+`Firefox` тоже есть подобные расширения, — не пользуюсь файрфоксом, не подскажу._
 
 Всё, мы закончили сохранять данные. Переходим к чтению данных.
 
 ### Модель читает данные
 
+Сейчас метод `isAuthorized` возвращает фейковый булевский флаг, а надо, чтобы взаправду читал данные в куке и 
+сообщал, есть они там или нет. Посмотрите, как я это реализовал, подумайте, и обсудим:
 
+```javascript
+modules.define(
+    'auth-model',
+    [
+        'inherit', 
+        'event-emitter',
+        'cookie'
+    ],
+    function (
+        provide, 
+        inherit, 
+        YEventEmitter,
+        Cookie
+    ) {
+        var AuthModel = inherit(YEventEmitter, {
+            __constructor: function () {
+                this.__base.apply(this, arguments);
+
+                this._cookieName = 'authorization';
+            },
+
+            /**
+             * Проверяет, авторизован ли пользователь
+             * @returns {Boolean}
+             */
+            isAuthorized: function () {
+                var userData = this.get();
+
+                return Boolean(userData && userData.login && userData.password);
+            },
+
+            /**
+             * Сохраняет авторизационные данные
+             * @param {Object} data Сохраняемые данные
+             */
+            save: function (data) {
+                // Передаём данные в бекенд или в куку
+                this._setUserData(data);
+
+                // Сообщаем контроллеру об успехе
+                this.emit('saved');
+            },
+
+            /**
+             * Возвращает авторизационные данные
+             * @returns {Object}
+             */
+            get: function () {
+                return this._getUserData();
+            },
+
+            /**
+             * Возвращает авторизационные данные пользователя
+             * Берёт их из куки 'authorization'
+             *
+             * @returns {Object | null}
+             */
+            _getUserData: function () {
+                var authCookie = Cookie.get(this._cookieName);
+
+                return authCookie? JSON.parse(authCookie) : null;
+            },
+
+            /**
+             * Сохраняет авторизационные данные в куке
+             * @param {Object} data Сохраняемые данные
+             */
+            _setUserData: function (data) {
+                // Сериализуем в строку, чтобы положить в куку
+                data = JSON.stringify(data);
+
+                // Сохраняем данные в куке...
+                Cookie.set(this._cookieName, data, {
+                    path: '/',
+                    expires: 365
+                });
+            }
+        });
+    
+        provide(AuthModel);
+});
+```
+
+И чтобы воочию убедиться, что данные читаются из куки, чуть изменим код Контроллера. Выведем в заголовок контентного 
+блока логин пользователя - ту самую строку, которую пользователь ввёл в поле логина:
+
+```javascript
+modules.define(
+    'page-controller',
+    [
+        'inherit',
+        'jquery',
+        'sidebar',
+        'form',
+        'y-i18n',
+        'auth-model' // <-- Позвали модуль с моделью авторизации
+    ],
+    function (
+        provide,
+        inherit,
+        $,
+        SidebarView,
+        FormView,
+        i18n,
+        AuthModel    // <-- Получили модель как переменную AuthModel
+    ) {
+
+    var PageController = inherit({
+        __constructor: function () {
+            console.log('index: PageController constructor');
+
+            // Создали экземпляр Модели Авторизации
+            this._authModel = new AuthModel();
+
+            // Слушаем событие на модели
+            // Произойдёт, когда модель успешно сохранит данные
+            this._authModel.on('saved', this.start, this);
+        },
+
+        /**
+         * Отображает контент или форму авторизации, елси пользователь незалогинен
+         */
+        start: function () {
+            $('body').empty();
+
+            // Спрашиваем у Модели, авторизован ли пользователь
+            var isAuthorized = this._authModel.isAuthorized();
+
+            if (isAuthorized) {
+                // Получаем авторизационные данные
+                var authData = this._authModel.get();
+
+                var sidebarView = new SidebarView({
+                    title: 'Привет, ' + authData.login + '!',  // <------- Здесь показываем логин пользователя
+                    resources: [
+                        {
+                            text: 'Репозиторий',
+                            url: 'https://github.com/bevis-ui/'
+                        },
+                        {
+                            text: 'Учебник для новичков',
+                            url: 'https://github.com/bevis-ui/docs/blob/master/manual-for-beginner.md'
+                        },
+                        {
+                            text: 'Учебник для старичков',
+                            url: 'https://github.com/bevis-ui/docs/blob/master/manual-for-master.md'
+                        }
+                    ]
+                });
+
+                sidebarView.getDomNode().appendTo($('body'));
+
+            } else {
+
+                var formAuthView = new FormView({
+                    titleText: i18n('form', 'title-text')
+                });
+
+                formAuthView.getDomNode().appendTo($('body'));
+                formAuthView.on('form-submitted', this._onFormAuthSubmitted, this);
+            }
+        },
+
+        /**
+         * Обработчик сабмита на форме авторизации
+         * @param {YEventEmitter} e
+         */
+        _onFormAuthSubmitted: function (e) {
+            this._authModel.save(e.data);
+        }
+    });
+
+    provide(PageController);
+});
+```
+
+Вот теперь всё работает. Сначала мы видим форму авторизации. В поле логина вместо слов "Привет, Бивис!" вводим своё 
+имя (я ввёл "Вадим"), вводим пароль в текстовое поле для пароля (неважно какой) и нажимаем `Enter`. Без перезагрузки 
+страницы видим, как форма исчезает, а контентный блок появляется. И в заголовке я увидел "Привет, Вадим!"
+   
 
 ----
 
