@@ -1994,7 +1994,7 @@ set: function (data) {
 _Мы взяли [плагин Клауса Хартла](https://github.com/js-cookie/js-cookie), и завернули в нашу модульную систему. 
 Спасибо вам, Клаус, отличный плагин!_  
 
-Подключаем модуль `Cookie` и пишем реализацию метода `_setUserData`:  
+Зовём модуль `Cookie` и пишем реализацию метода `_setUserData`:  
 ```javascript
 modules.define(
     'auth-model',
@@ -2058,6 +2058,11 @@ modules.define(
     
         provide(AuthModel);
 });
+```
+Не забываем указать зависимость от модуля `cookie` в `client/models/auth-model.deps.yaml`:
+```
+echo "- cookie
+" > client/models/auth-model.deps.yaml
 ```
 
 Обновляю в браузере `localhost:8080` — работает! Я вижу форму авторизации, пишу что-то в поля и нажимаю `Enter`. 
