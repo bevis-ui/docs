@@ -529,8 +529,8 @@ var inputLogin = new Input({namуAttr: 'login'});
 
 **Прототипы в Javascript - это... вообще не важно что**. Вообще! Вам не нужно задумываться, что это такое и как они устроены.
 
-_Если очень интересно, прочитайте у Ильи Кантора, он смог это объяснить [очень понятно](https://learn.javascript
-.ru/prototype). Но лучше не надо, поберегите себя. Хотя бы сейчас. Прочитайте через пару недель. Или через пару-тройку месяцев._
+_Если очень-преочень интересно, Илья Кантор смог это объяснить [хорошо](https://learn.javascript.ru/prototype).  Но 
+лучше не надо, поберегите себя. Хотя бы сейчас. Прочитайте через пару недель. Или через пару-тройку месяцев._
 
 Чтобы пользоваться прототипами совершенно не нужно понимать, что это такое. Я, к примеру, не разбираюсь в устройстве своего автомобиля. Но езжу на нём каждый день. И с прототипами можно поступить так же.
 
@@ -658,7 +658,7 @@ var inputLogin = new Input({namуAttr: 'login'});
     <th>Объектно-ориентированный стиль</th>
 </tr>
 <tr>
-   <td style="vertical-align: top;">
+   <td valign=top>
 <pre>
 var inputLogin = document.createElement('input');
 inputLogin.type = 'text';
@@ -703,7 +703,7 @@ function onInputKeyUpped (e) {
 }
 </pre>
    </td>
-   <td style="vertical-align: top;">
+   <td valign=top>
 <pre>
 function Input (params) {
     this.domElement = document.createElement('input');
