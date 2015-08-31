@@ -337,7 +337,7 @@ document.body.appendChild(inputAge);
 var inputLogin = new Input({name: 'login'});
 ```
 
-## Описываем свой класс с помощью `Function`
+## Создаём свой Класс
 
 Вам известно, с помощью чего в `Javascript` создаются функции? Конечно, вы пишете не меньше десятка таких функций в 
 день:
