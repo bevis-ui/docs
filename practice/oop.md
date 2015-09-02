@@ -357,7 +357,7 @@ function Input () {
 Забавно? Классы мы создаём тоже с помощью функций. То есть вы _уже умеете_ создавать классы в `Javascript` ;)
 
 _Обратите внимание, имя класса начинается c заглавной — `Input`. "Классы именуем с заглавной", — это неписаное 
-соглашение среди ООП-программистов. Его можно игнорироать, но лучше ему следовать, чтобы вы сами могли отличить 
+соглашение среди ООП-программистов. Его можно игнорировать, но лучше ему следовать, чтобы вы сами могли отличить 
 по именам, где plain-функция, а где целый класс._
 
 Теперь внимание, ответственный момент. Мы создаём первый в нашей жизни `Javascript-класс` собственноручно:
@@ -1095,11 +1095,11 @@ var Input = inherit({
      * @returns {HTMLElement}
      */
     _createDOMElement: function (name) {
-        var input = document.createElement('input');
-        input.name = name;
-        input.type = 'text';
+        var domElement = document.createElement('input');
+        domElement.name = name;
+        domElement.type = 'text';
 
-        return input;
+        return domElement;
     },
 
     _onKeyUpped: function (e) {
@@ -1190,11 +1190,11 @@ var Input = inherit({
      * @returns {HTMLElement}
      */
     _createDOMElement: function (name) {
-        var input = document.createElement('input');
-        input.name = name;
-        input.type = 'text';
+        var domElement = document.createElement('input');
+        domElement.name = name;
+        domElement.type = 'text';
 
-        return input;
+        return domElement;
     },
 
     _onKeyUpped: function (e) {
@@ -1396,3 +1396,44 @@ var Textarea = inherit(Input, {
 _Вообще лучше вместо `this.__base(params)` написать `this.__base.apply(this, arguments)`, тогда не нужно будет
 прокидывать конкретные `params` — в базовый класс улетят все аргументы. Но вы и так знаете, что такое `apply`. А
 если не знаете, [прочитайте](https://learn.javascript.ru/call-apply) и знайте :)_
+
+Класс `Textarea` в текущем виде совершенно бесполезен. Просто полная копия класса `Input`. Зачем он? Зачем такое 
+наследование нужно? 
+
+Если по-простому, наследование придумано для того, чтобы сделать точно "такой же класс, только 
+чуть-чуть иной".
+
+К примеру, класс `Textarea` полностью повторяет функциональность класса `Input`, только вместо тега 
+`<input>` нужно создавать тег `<textarea>`. Наследование - для этого. 
+ 
+Такая задача решается с помощью переопределения метода базового класса.
+
+### Переопределение и доопределение методов
+
+Я думаю, вы уже поняли, что базовым классом называют тот, от которого наследуют. А тот класс, который 
+наследуется от базового, называют производным. Запомним и эти термины.
+
+Переопределение базового метода — простая операция — создаем в прозводном классе метод с точно таким же именем, как в 
+базовом. И всё.
+
+```javascript
+var Textarea = inherit(Input, {
+    __constructor: function (params) {
+        this.__base.apply(this, arguments);
+    },
+    
+    /**
+     * Создаёт DOM-элемент <textarea>
+     *
+     * @private
+     * @param {String} name Значение для атрибута name
+     * @returns {HTMLElement}
+     */
+    _createDOMElement: function (name) {
+        var domElement = document.createElement('textarea');
+        domElement.name = name;
+
+        return domElement;
+    }
+});
+```
