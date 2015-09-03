@@ -952,7 +952,7 @@ module.exports = function (pages) {
                             {
                                 text: 'Учебник для старичков',
                                 url: 'https://github.com/bevis-ui/docs/blob/master/manual-for-master.md'
-                            },
+                            }
                         ]
                     }
                 }
