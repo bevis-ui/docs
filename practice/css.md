@@ -680,8 +680,6 @@ input_mixin() {
 
     &__control{
         font-size: 16px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -821,8 +819,6 @@ input_mixin($height) {
 
     &__control{
         font-size: 16px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -1000,8 +996,6 @@ module.exports = function (bt) {
     /* <input> */
     &__control{
         font-size: 16px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -1095,8 +1089,6 @@ cp input_large.styl input_small.styl
     /* <input> */
     &__control{
         font-size: 16px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -1109,8 +1101,6 @@ cp input_large.styl input_small.styl
     /* <input> */
     &__control{
         font-size: 13px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -1187,8 +1177,6 @@ CSS-код :)
     /* <input> */
     &__control{
         font-size: 13px;
-
-        padding: 0 1em;
     }
 }
 ```
@@ -1203,8 +1191,6 @@ CSS-код :)
     /* <input> */
     &__control{
         font-size: 16px;
-
-        padding: 0 1em;
     }
 }
 ```
