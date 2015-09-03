@@ -675,7 +675,6 @@ modules.define(
             focus: function () {
                 if (this.isEnabled()) {
                     this._setState('focused');
-                    this._control.focus();
                 }
                 return this;
             },
@@ -687,7 +686,6 @@ modules.define(
              */
             blur: function () {
                 this._removeState('focused');
-                this._control.blur();
                 return this;
             },
 
@@ -1215,7 +1213,7 @@ this._greetingInput = new Input({
 
 Было:
 ```javascript
-__constructor: function (params) {
+__constructor: function () {
     this.__base.apply(this, arguments);
 
     // Находим все элементы блока

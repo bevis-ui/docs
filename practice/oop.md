@@ -284,9 +284,9 @@ document.body.appendChild(inputEmail);
 document.body.appendChild(inputAge);
 
 // Слушаем событие focus на каждом инпуте
-inputLogin.addEventListener('focus', onInputKeyUpped);
-inputEmail.addEventListener('focus', onInputKeyUpped);
-inputAge.addEventListener('focus', onInputKeyUpped);
+inputLogin.addEventListener('focus', onInputFocused);
+inputEmail.addEventListener('focus', onInputFocused);
+inputAge.addEventListener('focus', onInputFocused);
 
 // Слушаем событие keyup на каждом инпуте
 inputLogin.addEventListener('keyup', onInputKeyUpped);
@@ -1098,8 +1098,8 @@ var Input = inherit({
     __constructor: function (params) {
         this._domElement = this._createDOMElement(params.nameAttr);
 
-        this._domElement.addEventListener('focus', this.onFocused);
-        this._domElement.addEventListener('keyup', this.onKeyUpped);
+        this._domElement.addEventListener('focus', this._onFocused);
+        this._domElement.addEventListener('keyup', this._onKeyUpped);
 
         this.render();
     },
@@ -1195,8 +1195,8 @@ var Input = inherit({
     __constructor: function (params) {
         this._domElement = this._createDOMElement(params.nameAttr);
 
-        this._domElement.addEventListener('focus', this.onFocused);
-        this._domElement.addEventListener('keyup', this.onKeyUpped);
+        this._domElement.addEventListener('focus', this._onFocused);
+        this._domElement.addEventListener('keyup', this._onKeyUpped);
     },
 
     /**
