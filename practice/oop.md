@@ -1489,15 +1489,15 @@ myTextarea.render(document.body);
  
 И как это будет работать?
 
-1. В строке `var myTextarea = new Textarea({nameAttr: 'comment'});` мы просим создать экземпляр класса `Textarea`.
+* В строке `var myTextarea = new Textarea({nameAttr: 'comment'});` мы просим создать экземпляр класса `Textarea`.
 
-2. Оператор `new` выполняет нашу просьбу — скрытно от наших глаз он вызывает метод `Textarea.__constructor({nameAttr: 
+* Оператор `new` выполняет нашу просьбу — скрытно от наших глаз он вызывает метод `Textarea.__constructor({nameAttr: 
 'comment'})` и передаёт параметры, которые мы указали аргументом к оператору `new`.
 
-3. В конструторе `Textarea` сказано `this.__base.apply(this, arguments);`, что означает - вызови точно такой же метод
+* В конструторе `Textarea` сказано `this.__base.apply(this, arguments);`, что означает - вызови точно такой же метод
  у класса, от которого отнаследован `Textarea`, то есть у класса `Input`, и пробрось туда все аргументы. 
 
-4. Дальше скрытно от наших глаз происходит вызов метода `Input.__constructor({nameAttr: 'comment'})`. Вспомним, как 
+* Дальше скрытно от наших глаз происходит вызов метода `Input.__constructor({nameAttr: 'comment'})`. Вспомним, как 
 выглядит этот метод:
 ```javascript
     var Input = inherit({
@@ -1511,14 +1511,14 @@ myTextarea.render(document.body);
         // .....
 ```
 
-5. Метод `Input.__constructor({nameAttr: 'comment'})` принимает хеш `{nameAttr: 'comment'}` в перемнную `params`, а 
+* Метод `Input.__constructor({nameAttr: 'comment'})` принимает хеш `{nameAttr: 'comment'}` в перемнную `params`, а 
 потом исполняет строку `this._domElement = this._createDOMElement(params.nameAttr);`
 
-6. И в этой строке происходит магия. Яваскрипт понимает, что внутри `Textarea` есть метод с точно таким же названием,
+* И в этой строке происходит магия. Яваскрипт понимает, что внутри `Textarea` есть метод с точно таким же названием,
  следовательно вызвать нужно именно его. Происходит это с помощью ключевого слова `this` — оно ссылается на объект 
  `myTextarea` — на объект, рожденный от класса `Textarea`. А у объектов этого класса есть свой собственный метод 
  `_createDOMElement`. Значит вызвать нужно именно его.
 
-7. А дальше мы дважды вызываем метод `addEventListener` для навешивания обработчиков событий - `_onFocused` и 
+* А дальше мы дважды вызываем метод `addEventListener` для навешивания обработчиков событий - `_onFocused` и 
 `_onKeyUpped`. Так как мы не описывали их в классе `Textarea`, они будут у базового класса - у `Input`.
 
