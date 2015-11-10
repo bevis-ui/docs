@@ -643,7 +643,7 @@ modules.define(
             _onClearClicked: function () {
                 if (this.isEnabled()) {
                     this.setValue('');
-                    this.focus();
+                    this._control.focus();
                 }
             },
 
